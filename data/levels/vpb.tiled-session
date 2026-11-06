@@ -1,0 +1,83 @@
+{
+    "activeFile": "world1/welcome_antarctica.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets/characters.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets/objects.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets/tiles.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 1
+        },
+        "tilesets/characters.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/objects.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "world1/base.tmx": {
+            "expandedObjectLayers": [
+                5,
+                3,
+                6
+            ],
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 1600,
+                "y": 303
+            }
+        },
+        "world1/test.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 2418.181818181818,
+                "y": 1387.8787878787878
+            }
+        },
+        "world1/welcome_antarctica.tmx": {
+            "expandedObjectLayers": [
+                7,
+                5,
+                3,
+                6
+            ],
+            "scale": 1.5,
+            "selectedLayer": 6,
+            "viewCenter": {
+                "x": 4785.666666666666,
+                "y": 1047.3333333333333
+            }
+        }
+    },
+    "last.externalTilesetPath": "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets",
+    "last.imagePath": "C:/Users/Sophie/weirdtux-haxe-new/data/images/tiled",
+    "last.objectTypesPath": "C:/Users/Sophie/weirdtux-haxe-new/data/images/propertytypes.json",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "world1/welcome_antarctica.tmx",
+        "world1/base.tmx"
+    ],
+    "project": "vpb.tiled-project",
+    "property.type": "direction",
+    "recentFiles": [
+        "world1/base.tmx",
+        "world1/welcome_antarctica.tmx",
+        "world1/test.tmx",
+        "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets/tiles.tsx",
+        "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets/objects.tsx",
+        "C:/Users/Sophie/weirdtux-haxe-new/data/tilesets/characters.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
