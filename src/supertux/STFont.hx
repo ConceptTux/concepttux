@@ -27,7 +27,7 @@ class STFont
     public var glyphHeight(default, null):Int;
     public var glyphBorder(default, null):Int;
 
-    private var glyphs:Map<Int, STFGlyph>;
+    var glyphs:Map<Int, STFGlyph>;
 
     private function new()
     {

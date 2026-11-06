@@ -481,11 +481,12 @@ class Player extends VPBSprite
 
     public function die()
     {
+        // FIXME: Sometimes doesn't work (seems to be when the player falls into the void)
         if (Global.coins >= 25)
         {
             Global.coins -= 25;
         }
-        
+
         FlxG.resetState();
     }
 

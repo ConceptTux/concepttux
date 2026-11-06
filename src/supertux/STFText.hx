@@ -7,13 +7,13 @@ class STFText extends FlxSpriteGroup
 {
     public var font(default, null):STFont;
 
-    private var shadowGroup:FlxSpriteGroup;
-    private var glyphGroup:FlxSpriteGroup;
+    var shadowGroup:FlxSpriteGroup;
+    var glyphGroup:FlxSpriteGroup;
 
-    private var shadowSprites:Array<FlxSprite>;
-    private var glyphSprites:Array<FlxSprite>;
+    var shadowSprites:Array<FlxSprite>;
+    var glyphSprites:Array<FlxSprite>;
 
-    private var _text:String = "";
+    var _text:String = "";
 
     public var text(get, set):String;
 
