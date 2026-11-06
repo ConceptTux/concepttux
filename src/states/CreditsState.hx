@@ -22,7 +22,9 @@ class CreditsState extends FlxState
         add(bg);
         
         creditsText = new FlxText(-12, 240, 256, "
-        Vaesea - Coding, Level, Art
+        SuperTux Team - Original SuperTux assets
+        
+        Vaesea - Coding
 
         AnatolyStev - Coding
 
