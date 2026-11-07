@@ -1,6 +1,6 @@
 # This workflow uses the jobs stuff from FNF Psych Engine.
 
-name: Build
+name: Windows
 
 # Controls when the workflow will run
 on:
