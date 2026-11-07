@@ -75,9 +75,9 @@ class BonusBlock extends Block
                 }
                 else
                 {
-                    trace("not implemented");
-                    // var fireFlower:FireFlower = new FireFlower(this.x, Std.int(this.get_body().shape.top - 32));
-                    // fireFlower.add_to_group(Global.PS.items);
+                    var fireFlower:FireFlower = new FireFlower(this.x, this.y);
+                    fireFlower.spawnFromBlock();
+                    Global.PS.items.add(fireFlower);
                 }
                 
                 FlxG.sound.play("data/sounds/upgrade.wav");

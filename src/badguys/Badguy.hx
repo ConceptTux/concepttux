@@ -246,9 +246,12 @@ class Badguy extends VPBSprite
         else // Fall
         {
             FlxG.sound.play("data/sounds/fall.wav");
+
             physics.accelerationX = 0;
             physics.velocityX = 0;
             physics.velocityY = 0;
+
+            flipY = true;
             solid = false;
         }
     }

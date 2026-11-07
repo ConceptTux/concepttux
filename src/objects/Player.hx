@@ -118,6 +118,7 @@ class Player extends VPBSprite
             x = 0;
         }
 
+        // Stop the player from falling off the map through the right
         if (x > Global.PS.map.width - this.width)
         {
             x = Global.PS.map.width - this.width;
@@ -132,6 +133,7 @@ class Player extends VPBSprite
         // Functions
         move(elapsed);
         animate();
+        shootFire();
 
         // Extra safety!
         velocity.set(0, 0);
@@ -526,6 +528,8 @@ class Player extends VPBSprite
         {
             canTakeDamage = false;
 
+            Global.PS.maximumBullets = 0;
+
             FlxTween.flicker(this, invSeconds, 0.1, {type: ONESHOT});
 
             new FlxTimer().start(invSeconds, function(_)
@@ -590,6 +594,8 @@ class Player extends VPBSprite
             reloadGraphics();
             y -= height - smallHeight;
         }
+
+        Global.PS.maximumBullets += 1;
     }
 
     public function reloadGraphics()
@@ -715,6 +721,24 @@ class Player extends VPBSprite
             physics.velocityX = 0;
             angle = 0;
             backflipDirection = 0;
+        }
+    }
+
+    function shootFire()
+    {
+        if (Global.PS.maximumBullets > 0 && currentState == FIRE)
+        {
+            if (FlxG.keys.justPressed.CONTROL && Global.PS.activeBullets < Global.PS.maximumBullets)
+            {
+                var fireBullet:Bullet = new Bullet(getCenterX(), getCenterY() - 8);
+
+                fireBullet.direction = this.direction;
+                fireBullet.setSpeed(this);
+
+                Global.PS.bullets.add(fireBullet);
+
+                FlxG.sound.play("data/sounds/shoot.wav");
+            }
         }
     }
 }

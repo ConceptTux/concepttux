@@ -61,10 +61,10 @@ class Egg extends VPBSprite
     public function spawnFromBlock()
     {
         solid = false;
-
         physics.gravityEnabled = false;
 
         var startY = this.y;
+        
         FlxTween.tween(this, {y: startY - 32}, 0.5, {onComplete: function(_) 
         {
             physics.gravityEnabled = true;

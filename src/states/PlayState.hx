@@ -1,5 +1,7 @@
 package states;
 
+import objects.FireFlower;
+import objects.Bullet;
 import misc.VPBSprite;
 import objects.Egg;
 import misc.PlayerStatus;
@@ -38,6 +40,7 @@ class PlayState extends FlxState
 	public var itemsFlxSprite(default, null):FlxTypedGroup<FlxSprite>;
 	public var blocks(default, null):FlxTypedGroup<BlockArea>;
 	public var badguys(default, null):FlxTypedGroup<Badguy>;
+	public var bullets(default, null):FlxTypedGroup<Bullet>;
 	
 	/* If you're planning on adding more things (like enemies)
 	   that can't go in the items group, add them to entities!
@@ -56,6 +59,10 @@ class PlayState extends FlxState
 
 	public var levelBackgrounds:Array<STBackground> = [];
 
+	// Bullets
+    public var activeBullets:Int = 0; // Don't change this!
+    public var maximumBullets:Int = 0;
+
 	override public function create()
 	{
 		super.create();
@@ -69,6 +76,7 @@ class PlayState extends FlxState
 		player = new Player();
 		items = new FlxTypedGroup<VPBSprite>();
 		itemsFlxSprite = new FlxTypedGroup<FlxSprite>();
+		bullets = new FlxTypedGroup<Bullet>();
 		blocks = new FlxTypedGroup<BlockArea>();
 		badguys = new FlxTypedGroup<Badguy>();
 		playerStatus = new PlayerStatus();
@@ -83,6 +91,7 @@ class PlayState extends FlxState
 		FlxG.worldBounds.set(0, 0, map.width, map.height);
 
 		// Add things part 3
+		entities.add(bullets);
 		entities.add(items);
 		entities.add(itemsFlxSprite);
 		entities.add(badguys);
@@ -137,6 +146,14 @@ class PlayState extends FlxState
 			}
 		}
 
+		for (bullet in bullets.members)
+		{
+			if (bullet != null && bullet.exists)
+			{
+				Collision.resolve(bullet, solids, bullet.physics, elapsed);
+			}
+		}
+
 		// Tux collision
 		OverlapUtil.overlapOnce(entities, player, collideEntities);
 		OverlapUtil.overlapOnce(checkpoint, player, collideEntities);
@@ -148,11 +165,17 @@ class PlayState extends FlxState
 			}
 		});
 
-		FlxG.overlap(badguys, badguys, function(entity:FlxSprite, badguy:Badguy) 
+		FlxG.overlap(entities, badguys, function(entity:FlxSprite, badguy:Badguy) 
 		{
 			if (Std.isOfType(entity, Badguy))
 			{
 				badguy.collideOtherBadguy(cast entity);
+			}
+
+			if (Std.isOfType(entity, Bullet))
+			{
+				badguy.killFall();
+				entity.kill();
 			}
 		});
 
@@ -172,7 +195,7 @@ class PlayState extends FlxState
 		{
 			(cast entity).collect();
 		}
-		if (Std.isOfType(entity, Egg))
+		if (Std.isOfType(entity, Egg) || Std.isOfType(entity, FireFlower))
 		{
 			(cast entity).collect(player);
 		}
