@@ -1,6 +1,6 @@
 # This workflow uses the jobs stuff from FNF Psych Engine.
 
-name: Build
+name: Linux
 
 # Controls when the workflow will run
 on:
@@ -33,7 +33,6 @@ jobs:
           haxelib install lime
           haxelib install flixel
           haxelib install flixel-addons
-        shell: cmd
       - name: Compile
         run: haxelib run lime build linux
       - name: Publish Artifact
