@@ -110,11 +110,15 @@ class LevelLoader extends FlxState
                 default:
                     trace("Object has no type!");
                 case "coin":
-                    state.items.add(new Coin(object.x, object.y - 32));
+                    state.itemsFlxSprite.add(new Coin(object.x, object.y - 32));
                 case "bonus_coin":
                     var bonusBlockCoin:BonusBlock = new BonusBlock(object.x, object.y - 32);
                     bonusBlockCoin.content = "coin";
                     state.solids.add(bonusBlockCoin);
+                case "bonus_powerup":
+                    var bonusBlockPowerup:BonusBlock = new BonusBlock(object.x, object.y - 32);
+                    bonusBlockPowerup.content = "powerup";
+                    state.solids.add(bonusBlockPowerup);
                 case "brick":
                     state.solids.add(new BrickBlock(object.x, object.y - 32));
                 case "brickCoin":

@@ -48,13 +48,8 @@ class STFont
         var root = STFNode.parse(data);
 
         font.glyphWidth =  root.getInt("glyph-width");
-        trace(font.glyphWidth);
-
         font.glyphHeight = root.getInt("glyph-height");
-        trace(font.glyphHeight);
-
         font.glyphBorder = root.getInt("glyph-border");
-        trace(font.glyphBorder);
 
         var surface = root.getChild("surface");
 
@@ -71,15 +66,10 @@ class STFont
     private function loadSurface(surface:STFNode)
     {
         var charWidth = surface.getInt("glyph-width", glyphWidth);
-
+        
         var glyphFile = surface.getString("glyphs");
-        trace(glyphFile);
-
         var shadowFile = surface.getString("shadows");
-        trace(shadowFile);
-
         var chars = surface.getStrings("chars");
-        trace(chars);
 
         if (chars.length == 0)
         {

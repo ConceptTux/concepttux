@@ -15,6 +15,8 @@ class Snowball extends Badguy
 
         setSize(32, 32);
         offset.set(2, 4);
+
+        physics.maxVelocityX = walkSpeed;
     }
 
     override private function move()

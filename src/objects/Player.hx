@@ -21,21 +21,21 @@ enum TuxStates
 class Player extends VPBSprite
 {
     // Movement
-    var walkAcceleration:Int = 300;
-    var runAcceleration:Int = 400;
-    var walkStartSpeed:Int = 100;
-    var walkSpeed:Int = 230;
-    var runSpeed:Int = 320;
-    var friction:Int = 450;
-    public var minJumpHeight:Int = -520;
-    public var maxJumpHeight:Int = -580;
-    var duckJumpHeight:Int = -300;
-    var jumpCancel:Float = 3.0;
-    var speed:Int = 0;
-    var decelerateOnJumpRelease:Float = 0.5;
+    final walkAcceleration:Int = 300;
+    final runAcceleration:Int = 400;
+    final walkStartSpeed:Int = 100;
+    final walkSpeed:Int = 230;
+    final runSpeed:Int = 320;
+    final friction:Int = 450;
+    public final minJumpHeight:Int = -520;
+    public final maxJumpHeight:Int = -580;
+    final duckJumpHeight:Int = -300;
+    final jumpCancel:Float = 3.0;
+    var speed:Int = 0; // Don't change!
+    final decelerateOnJumpRelease:Float = 0.5;
 
     // Jump buffering
-    var jumpBufferTime:Float = 0.25;
+    final jumpBufferTime:Float = 0.25;
     var jumpBuffer:Float = 0.0; // Don't change!
     var jumpCutRequested:Bool = false;
 
@@ -43,29 +43,30 @@ class Player extends VPBSprite
     var ducking:Bool = false;
 
     // Skidding
-    var skidThreshold:Float = 200;
-    var skidAccelerationMultiplier:Float = 2.5;
-    var reverseAccelerationMultiplier:Float = 2.0;
-    var skidTime:Float = 0.3;
-    var skidTimer:Float = 0.0;
+    final skidThreshold:Float = 200;
+    final skidAccelerationMultiplier:Float = 2.5;
+    final reverseAccelerationMultiplier:Float = 2.0;
+    final skidTime:Float = 0.3;
+    var skidTimer:Float = 0.0; // Don't change!
 
     // Backflipping
     var backflipping:Bool = false;
     var backflipDirection:Int = 1;
-    var backflipElapsed:Float = 0.0;
-    var backflipTimer:Float = 0.0;
-    var backflipTime:Float = 2.1;
-    var backflipSpeed:Int = 100;
-    var backflipRotateSpeed:Float = 0.5;
-    var backflipLandingTimer:Float = 0.0;
-    var backflipLandingTime:Float = 0.1;
+    var backflipElapsed:Float = 0.0; // Don't change!
+    var backflipTimer:Float = 0.0; // Don't change!
+    final backflipTime:Float = 2.1;
+    final backflipSpeed:Int = 100;
+    final backflipRotateSpeed:Float = 0.5;
+    var backflipLandingTimer:Float = 0.0; // Don't change!
+    final backflipLandingTime:Float = 0.1;
     var rollJumpRequested:Bool = false;
 
     // Buttjump (aka Ground Pound if you play Mario)
     var fakeButtjump:Bool = false;
     public var actualButtjump:Bool = false;
-    var buttjumpMinVelocityY:Float = 400;
+    final buttjumpMinVelocityY:Float = 400;
     var buttjumpBounced:Bool = false;
+    var buttjumpSoundPlayed:Bool = false;
     
     // Direction
     public var direction:Int = 1;
@@ -76,7 +77,7 @@ class Player extends VPBSprite
 
     // Damage
     var canTakeDamage:Bool = true;
-    var invSeconds:Float = 1.8;
+    final invSeconds:Float = 1.8;
 
     public function new()
     {
@@ -87,6 +88,8 @@ class Player extends VPBSprite
         // Add deceleration (drag) and gravity
         physics.maxVelocityX = runSpeed;
         physics.maxVelocityY = Global.maxFallSpeed;
+
+        physics.dragX = 0;
     }
 
     override public function update(elapsed:Float)
@@ -171,7 +174,10 @@ class Player extends VPBSprite
         }
         else if (!ducking && skidTimer <= 0 && !backflipping && (fakeButtjump || actualButtjump))
         {
-            animation.play("buttjump");
+            if (animation.name != "buttjump")
+            {
+                animation.play("buttjump");   
+            }
         }
     }
 
@@ -200,7 +206,9 @@ class Player extends VPBSprite
             backflipTimer -= elapsed;
 
             if (backflipTimer < 0)
+            {
                 backflipTimer = 0;
+            }
         }
 
         // Backflip landing timer thing. This is not backflipTimer
@@ -209,7 +217,9 @@ class Player extends VPBSprite
             backflipLandingTimer -= elapsed;
 
             if (backflipLandingTimer < 0)
+            {
                 backflipLandingTimer = 0;
+            }
         }
 
         if (backflipping)
@@ -239,7 +249,7 @@ class Player extends VPBSprite
             var directionInput:Int = 0;
 
             // If player presses left, move left. If player presses right, move right
-            var duck_on_floor = (ducking && physics.grounded);
+            final duck_on_floor = (ducking && physics.grounded);
             
             // Left / Right movement (if not ducking!)
             if (!duck_on_floor)
@@ -338,8 +348,7 @@ class Player extends VPBSprite
             }
             else if (!backflipping && physics.grounded && ducking && !rollJumpRequested)
             {
-                var horizontalHeld =
-                    FlxG.keys.anyPressed([LEFT, A, RIGHT, D]);
+                final horizontalHeld = FlxG.keys.anyPressed([LEFT, A, RIGHT, D]);
 
                 if (Math.abs(physics.velocityX) > 0.001 || horizontalHeld)
                 {
@@ -395,10 +404,16 @@ class Player extends VPBSprite
         {
             if (physics.grounded)
             {
+                buttjumpSoundPlayed = false;
+                
                 if (actualButtjump && !buttjumpBounced)
                 {
                     actualButtjump = false;
                     buttjumpBounced = true;
+                    buttjumpSoundPlayed = false;
+
+                    FlxG.camera.shake(0.03, 0.1);
+                    FlxG.sound.play("data/sounds/brick.wav");
 
                     physics.velocityY = duckJumpHeight;
                     physics.setGravityModifier(1);
@@ -415,6 +430,10 @@ class Player extends VPBSprite
                     {
                         setDucking(true);
                     }
+                }
+                else if (fakeButtjump)
+                {
+                    fakeButtjump = false;
                 }
 
                 if (!buttjumpBounced && !actualButtjump)
@@ -437,9 +456,15 @@ class Player extends VPBSprite
                     fakeButtjump = true;
                 }
 
-                if (fakeButtjump && !buttjumpBounced && physics.velocityY >= buttjumpMinVelocityY)
+                if (FlxG.keys.anyPressed([DOWN, S]) && fakeButtjump && !buttjumpBounced && physics.velocityY >= buttjumpMinVelocityY)
                 {
                     actualButtjump = true;
+                    
+                    if (!buttjumpSoundPlayed)
+                    {
+                        FlxG.sound.play("data/sounds/tuxbuttjump.wav");
+                        buttjumpSoundPlayed = true;
+                    }
                 }
             }
 
@@ -455,6 +480,7 @@ class Player extends VPBSprite
             fakeButtjump = false;
             actualButtjump = false;
             buttjumpBounced = false;
+            buttjumpSoundPlayed = false;
             ducking = false;
             stopBackflip();
         }
@@ -495,11 +521,14 @@ class Player extends VPBSprite
         if (canTakeDamage)
         {
             canTakeDamage = false;
+
             FlxTween.flicker(this, invSeconds, 0.1, {type: ONESHOT});
+
             new FlxTimer().start(invSeconds, function(_)
             {
                 canTakeDamage = true;
             }, 1);
+
             FlxG.sound.play("data/sounds/hurt.wav");
             
             if (currentState == FIRE)
@@ -521,17 +550,6 @@ class Player extends VPBSprite
         }
     }
 
-    public function bigTux()
-    {
-        if (currentState == SMALL)
-        {
-            var smallHeight = height;
-            currentState = BIG;
-            reloadGraphics();
-            y -= height - smallHeight;
-        }
-    }
-
     public function smallTux()
     {
         if (currentState != SMALL)
@@ -540,6 +558,17 @@ class Player extends VPBSprite
             currentState = SMALL;
             reloadGraphics();
             y = prevBottom - height;
+        }
+    }
+
+    public function bigTux()
+    {
+        if (currentState == SMALL)
+        {
+            var smallHeight = height;
+            currentState = BIG;
+            reloadGraphics();
+            y -= height - smallHeight;
         }
     }
 
@@ -577,14 +606,14 @@ class Player extends VPBSprite
             case BIG:
                 loadGraphic("data/images/creatures/tux/big_tux.png", true, 64, 80);
                 animation.add("stand", [0], 10.0, false);
-                animation.add("walk", [1, 2, 3, 4, 5, 6], 15.0, true);
-                animation.add("idle", [7, 8, 7], 5.0, false);
-                animation.add("duck", [9], 10.0, false);
-                animation.add("jump", [10], 10.0, false);
-                animation.add("backflip", [11], 10.0, false);
-                animation.add("buttjump", [12], 10.0, false);
-                animation.add("kick", [13], 10.0, false);
-                animation.add("skid", [14], 10.0, false);
+                animation.add("walk", [1, 2, 3, 4, 5, 6, 7, 8], 15.0, true);
+                animation.add("idle", [9, 10, 9, 0], 5.0, false);
+                animation.add("duck", [12], 10.0, false);
+                animation.add("jump", [11], 10.0, false);
+                animation.add("backflip", [13], 10.0, false);
+                animation.add("buttjump", [14, 15, 16, 17, 18, 19, 20], 15.0, false);
+                animation.add("kick", [21], 10.0, false);
+                animation.add("skid", [22], 10.0, false);
                 setSize(30, 60);
                 offset.set(17, 20);
             case FIRE:

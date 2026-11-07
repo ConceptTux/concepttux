@@ -1,5 +1,7 @@
 package states;
 
+import misc.VPBSprite;
+import objects.Egg;
 import misc.PlayerStatus;
 import badguys.Badguy;
 import collision.OverlapUtil;
@@ -32,7 +34,8 @@ class PlayState extends FlxState
 
 	// Add things (Variables)
 	public var player(default, null):Player;
-	public var items(default, null):FlxTypedGroup<FlxSprite>;
+	public var items(default, null):FlxTypedGroup<VPBSprite>;
+	public var itemsFlxSprite(default, null):FlxTypedGroup<FlxSprite>;
 	public var blocks(default, null):FlxTypedGroup<BlockArea>;
 	public var badguys(default, null):FlxTypedGroup<Badguy>;
 	
@@ -64,7 +67,8 @@ class PlayState extends FlxState
 		entities = new FlxGroup();
 		solids = new FlxGroup();
 		player = new Player();
-		items = new FlxTypedGroup<FlxSprite>();
+		items = new FlxTypedGroup<VPBSprite>();
+		itemsFlxSprite = new FlxTypedGroup<FlxSprite>();
 		blocks = new FlxTypedGroup<BlockArea>();
 		badguys = new FlxTypedGroup<Badguy>();
 		playerStatus = new PlayerStatus();
@@ -80,6 +84,7 @@ class PlayState extends FlxState
 
 		// Add things part 3
 		entities.add(items);
+		entities.add(itemsFlxSprite);
 		entities.add(badguys);
 		add(solids);
 		add(blocks);
@@ -114,11 +119,21 @@ class PlayState extends FlxState
 
 		Collision.resolve(player, solids, player.physics, elapsed);
 
+		// what the hell is all this
+		// nvm it's because badguy.physics
 		for (badguy in badguys.members)
 		{
 			if (badguy != null && badguy.exists)
 			{
 				Collision.resolve(badguy, solids, badguy.physics, elapsed);
+			}
+		}
+
+		for (item in items.members)
+		{
+			if (item != null && item.exists)
+			{
+				Collision.resolve(item, solids, item.physics, elapsed);
 			}
 		}
 
@@ -156,6 +171,10 @@ class PlayState extends FlxState
 		if (Std.isOfType(entity, Coin))
 		{
 			(cast entity).collect();
+		}
+		if (Std.isOfType(entity, Egg))
+		{
+			(cast entity).collect(player);
 		}
 
 		if (Std.isOfType(entity, Goal))

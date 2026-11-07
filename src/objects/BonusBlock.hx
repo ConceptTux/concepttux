@@ -49,7 +49,6 @@ class BonusBlock extends Block
         createItem();
 
         var startY = this.y;
-
         FlxTween.tween(this, {y: startY - 8}, 0.05) .wait(0.05) .then(FlxTween.tween(this, {y: startY}, 0.05, {onComplete: function(_) 
         {
             hitAreaDown.exists = true;
@@ -66,22 +65,22 @@ class BonusBlock extends Block
             case "coin":
                 var coin:Coin = new Coin(this.x, this.y);
                 coin.collect();
-                Global.PS.items.add(coin);
-            
-            // case "powerup":
-            //     if (Global.PS.player.currentState == SMALL)
-            //     {
-            //         var egg:Egg = new Egg(this.x, Std.int(this.get_body().shape.top - 32));
-            //         egg.add_to_group(Global.PS.items);
-            //     }
-            //     else
-            //     {
-            //         var fireFlower:FireFlower = new FireFlower(this.x, Std.int(this.get_body().shape.top - 32));
-            //         fireFlower.add_to_group(Global.PS.items);
-            //     }
+                Global.PS.itemsFlxSprite.add(coin);
+            case "powerup":
+                if (Global.PS.player.currentState == SMALL)
+                {
+                    var egg:Egg = new Egg(this.x, this.y);
+                    egg.spawnFromBlock();
+                    Global.PS.items.add(egg);
+                }
+                else
+                {
+                    trace("not implemented");
+                    // var fireFlower:FireFlower = new FireFlower(this.x, Std.int(this.get_body().shape.top - 32));
+                    // fireFlower.add_to_group(Global.PS.items);
+                }
                 
-            //     FlxG.sound.play("assets/sounds/upgrade.wav");
-
+                FlxG.sound.play("data/sounds/upgrade.wav");
             // case "tuxdoll":
             //     var tuxDoll:TuxDoll = new TuxDoll(this.x, Std.int(y - 32));
             //     Global.PS.td.add(tuxDoll);

@@ -99,7 +99,7 @@ private class STFNodeParser
 
         if (peek() != "(")
         {
-            trace("STF file must begin with '('!");
+            throw "STF file must begin with '('!";
         }
 
         return parseNode();
@@ -119,7 +119,7 @@ private class STFNodeParser
 
             if (position >= text.length)
             {
-                trace("Unexpected end of STF file!");
+                throw "Unexpected end of STF file!";
             }
 
             if (peek() == ")")

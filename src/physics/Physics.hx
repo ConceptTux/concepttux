@@ -98,11 +98,6 @@ class Physics
         accelerationY = value;
     }
 
-    public function enableGravity(enabled:Bool)
-    {
-        gravityEnabled = enabled;
-    }
-
     public function setGravityModifier(value:Float)
     {
         gravityModifier = value;
@@ -144,6 +139,7 @@ class Physics
             velocityY = 0;
         }
 
+        // X clamp
         if (maxVelocityX >= 0)
         {
             if (velocityX > maxVelocityX)
@@ -156,6 +152,7 @@ class Physics
             }
         }
 
+        // Y clamp
         if (maxVelocityY >= 0)
         {
             if (velocityY > maxVelocityY)

@@ -111,7 +111,7 @@
   <object id="181" type="coin" gid="2489" x="4256" y="96" width="32" height="32"/>
   <object id="186" type="coin" gid="2489" x="4320" y="96" width="32" height="32"/>
   <object id="249" type="bonus_coin" gid="2491" x="384" y="352" width="32" height="32"/>
-  <object id="256" type="bonus_coin" gid="2491" x="1248" y="352" width="32" height="32"/>
+  <object id="256" type="bonus_powerup" gid="2491" x="1248" y="352" width="32" height="32"/>
   <object id="250" type="bonus_coin" gid="2491" x="448" y="352" width="32" height="32"/>
   <object id="255" type="bonus_coin" gid="2491" x="1312" y="352" width="32" height="32"/>
   <object id="251" type="bonus_coin" gid="2491" x="512" y="352" width="32" height="32"/>
@@ -119,7 +119,7 @@
   <object id="252" type="bonus_coin" gid="2491" x="576" y="352" width="32" height="32"/>
   <object id="253" type="bonus_coin" gid="2491" x="1440" y="352" width="32" height="32"/>
   <object id="257" type="bonus_coin" gid="2491" x="3808" y="224" width="32" height="32"/>
-  <object id="262" type="bonus_coin" gid="2491" x="3904" y="224" width="32" height="32"/>
+  <object id="262" type="bonus_powerup" gid="2491" x="3904" y="224" width="32" height="32"/>
   <object id="258" type="bonus_coin" gid="2491" x="3840" y="224" width="32" height="32"/>
   <object id="261" type="bonus_coin" gid="2491" x="3936" y="224" width="32" height="32"/>
   <object id="259" type="bonus_coin" gid="2491" x="3872" y="224" width="32" height="32"/>
@@ -131,7 +131,7 @@
   <object id="269" type="bonus_coin" gid="2491" x="4640" y="224" width="32" height="32"/>
   <object id="271" type="bonus_coin" gid="2491" x="4640" y="96" width="32" height="32"/>
   <object id="272" type="bonus_coin" gid="2491" x="5328" y="256" width="32" height="32"/>
-  <object id="273" type="bonus_coin" gid="2491" x="6432" y="160" width="32" height="32"/>
+  <object id="273" type="bonus_powerup" gid="2491" x="6432" y="160" width="32" height="32"/>
   <object id="274" type="bonus_coin" gid="2491" x="7616" y="352" width="32" height="32"/>
   <object id="275" type="bonus_coin" gid="2491" x="8160" y="352" width="32" height="32"/>
   <object id="266" type="bonus_coin" gid="2491" x="4672" y="352" width="32" height="32"/>
@@ -145,7 +145,7 @@
   <object id="280" type="brick" gid="2509" x="1408" y="352" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="10" name="Badguys">
-  <object id="284" type="snowball" gid="2482" x="1664" y="448" width="32" height="32">
+  <object id="284" type="snowball" gid="2482" x="1248" y="448" width="32" height="32">
    <properties>
     <property name="direction" value="auto"/>
    </properties>
@@ -205,11 +205,6 @@
     <property name="direction" value="auto"/>
    </properties>
   </object>
-  <object id="285" type="snowball" gid="2482" x="1088" y="448" width="32" height="32">
-   <properties>
-    <property name="direction" value="auto"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup id="6" name="Level">
   <object id="248" type="checkpoint" gid="2490" x="5328" y="320" width="32" height="32"/>
@@ -220,8 +215,8 @@
   <object id="151" x="3456" y="320" width="736" height="288"/>
   <object id="152" x="2144" y="320" width="128" height="128"/>
   <object id="154" x="1696" y="384" width="128" height="64"/>
-  <object id="165" type="unisolid_top" x="3008" y="352" width="160" height="32"/>
-  <object id="166" type="unisolid_top" x="3200" y="256" width="160" height="32"/>
+  <object id="165" x="3008" y="352" width="160" height="32"/>
+  <object id="166" x="3200" y="256" width="160" height="32"/>
   <object id="188" x="4192" y="352" width="32" height="256"/>
   <object id="189" x="4224" y="384" width="32" height="224"/>
   <object id="190" x="4256" y="416" width="32" height="192"/>

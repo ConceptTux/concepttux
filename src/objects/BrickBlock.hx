@@ -57,25 +57,19 @@ class BrickBlock extends Block
 
             if (tux.currentState != SMALL)
             {
-                FlxTween.tween(
-                    this,
-                    {y: startY - 8},
-                    0.05,
-                    {onComplete: break_brick}
-                );
+                FlxTween.tween(this, {y: startY - 8}, 0.05, {onComplete: break_brick});
             }
             else
             {
-                FlxTween.tween(this, {y: startY - 8}, 0.05)
-                    .wait(0.05)
-                    .then(FlxTween.tween(this, {y: startY}, 0.05, {
-                        onComplete: function(_)
-                        {
-                            hitAreaDown.exists = true;
-                            hitAreaLeft.exists = true;
-                            hitAreaRight.exists = true;
-                        }
-                    }));
+                FlxTween.tween(this, {y: startY - 8}, 0.05) .wait(0.05) .then(FlxTween.tween(this, {y: startY}, 0.05, 
+                {
+                    onComplete: function(_)
+                    {
+                        hitAreaDown.exists = true;
+                        hitAreaLeft.exists = true;
+                        hitAreaRight.exists = true;
+                    }
+                }));
             }
         }
         else
@@ -85,24 +79,27 @@ class BrickBlock extends Block
             hitAreaRight.exists = false;
 
             if (amount <= 1)
+            {
                 isEmpty = true;
+            }
 
             createItem();
             amount -= 1;
 
-            FlxTween.tween(this, {y: startY - 8}, 0.05)
-                .wait(0.05)
-                .then(FlxTween.tween(this, {y: startY}, 0.05, {
-                    onComplete: function(_)
+            FlxTween.tween(this, {y: startY - 8}, 0.05) .wait(0.05) .then(FlxTween.tween(this, {y: startY}, 0.05, 
+            {
+                onComplete: function(_)
+                {
+                    if (isEmpty)
                     {
-                        if (isEmpty)
-                            animation.play("empty");
-
-                        hitAreaDown.exists = true;
-                        hitAreaLeft.exists = true;
-                        hitAreaRight.exists = true;
+                        animation.play("empty");
                     }
-                }));
+
+                    hitAreaDown.exists = true;
+                    hitAreaLeft.exists = true;
+                    hitAreaRight.exists = true;
+                }
+            }));
         }
     }
 
@@ -128,5 +125,12 @@ class BrickBlock extends Block
         Global.PS.add(brick_4);
 
         kill();
+    }
+
+    override private function createItem()
+    {
+        var coin:Coin = new Coin(this.x, this.y);
+        coin.collect();
+        Global.PS.itemsFlxSprite.add(coin);
     }
 }

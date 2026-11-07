@@ -118,7 +118,7 @@ class VPBSprite extends FlxSprite
         return y + height * 0.5;
     }
 
-    /** Returns whether the character is walking into the wall**/
+    /** Returns whether the character is walking into the wall **/
     function isWalkingIntoWall()
     {
         return (physics.velocityX > 0 && isTouching(RIGHT)) || (physics.velocityX < 0 && isTouching(LEFT));

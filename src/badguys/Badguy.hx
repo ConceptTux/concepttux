@@ -58,10 +58,10 @@ class Badguy extends VPBSprite
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
         super(x, y);
+
         immovable = false;
 
-        physics.maxVelocityY = Global.maxFallSpeed;
-        physics.maxVelocityX = walkSpeed;
+        physics.dragX = 0;
 
         initDirection(Global.PS.player);
     }
