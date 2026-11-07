@@ -38,12 +38,27 @@ class Collision
             return false;
         }
 
-        if (!body.exists || !body.alive || !body.active || !body.moves || !body.solid || body.immovable)
+        if (!body.exists || !body.alive || !body.active || !body.moves || body.immovable)
         {
             return false;
         }
 
         body.touching = NONE;
+
+        if (!body.solid)
+        {
+            physics.grounded = false;
+            physics.groundSlope = 0.0;
+
+            physics.integrate(elapsed);
+
+            body.x += physics.velocityX * elapsed;
+            body.y += physics.velocityY * elapsed;
+
+            body.velocity.set(physics.velocityX, physics.velocityY);
+
+            return false;
+        }
 
         final wasGrounded = physics.grounded && physics.velocityY >= -move_epsilon;
 
