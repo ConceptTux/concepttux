@@ -108,6 +108,12 @@ class Player extends VPBSprite
             fireTux();
         }
 
+        // Noot button (not my idea)
+        if (FlxG.keys.justPressed.Q)
+        {
+            FlxG.sound.play("data/sounds/noot.wav");
+        }
+
         // Stop the player from falling off the map through the left
         if (x < 0)
         {
@@ -405,7 +411,7 @@ class Player extends VPBSprite
             if (physics.grounded)
             {
                 buttjumpSoundPlayed = false;
-                
+
                 if (actualButtjump && !buttjumpBounced)
                 {
                     actualButtjump = false;
