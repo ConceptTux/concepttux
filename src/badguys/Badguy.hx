@@ -61,8 +61,6 @@ class Badguy extends VPBSprite
 
         immovable = false;
 
-        physics.dragX = 0;
-
         initDirection(Global.PS.player);
     }
 

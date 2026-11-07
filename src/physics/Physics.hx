@@ -14,7 +14,7 @@ class Physics
     public var gravityEnabled:Bool = true;
     public var gravityModifier:Float = 1.0;
 
-    public var dragX:Float = 1000;
+    public var dragX:Float = 0;
 
     public var maxVelocityX:Float = 128;
     public var maxVelocityY:Float = 2000;

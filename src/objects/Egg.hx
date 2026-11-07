@@ -20,7 +20,6 @@ class Egg extends VPBSprite
 
         // Set max speed so the Egg doesn't go too fast (it shouldn't anyways)
         physics.maxVelocityX = moveSpeed;
-        physics.dragX = 0;
 
         // Load egg sprite (TODO: possibly remake the sprite in the future for it to look good when rotating?)
         loadGraphic("data/images/powerup/egg.png");

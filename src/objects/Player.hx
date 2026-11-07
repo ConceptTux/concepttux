@@ -88,8 +88,6 @@ class Player extends VPBSprite
         // Add deceleration (drag) and gravity
         physics.maxVelocityX = runSpeed;
         physics.maxVelocityY = Global.maxFallSpeed;
-
-        physics.dragX = 0;
     }
 
     override public function update(elapsed:Float)
