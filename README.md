@@ -11,7 +11,11 @@ This README is under construction.
 - Revisit old concepts
 - Use Tiled for levels
 - Keep the levels mostly uncomplicated
-- Use polymod
+- Use polymod for mod support (later)
 - Possibly use hscript for scripting support? (There's no library for squirrel support)
 - Focus on being a fun, open source platformer without complicated puzzles or too many cutscenes
 - Have the old art style, but improve the old art if needed
+- Completely overhaul the Forest World
+- Add swimming
+- Add sliding (spindash-like move?)
+- Other things
