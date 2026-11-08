@@ -33,10 +33,21 @@ class BonusBlock extends Block
 
         tux.physics.velocityY = 0; // Stop movement, fixes a bug
 
-        bounce();
+        if (tux.getCenterX() < x + width * 0.5)
+        {
+            bounce("right");
+        }
+        else if (tux.getCenterX() == x + width * 0.5)
+        {
+            bounce("right");
+        }
+        else if (tux.getCenterX() > x + width * 0.5)
+        {
+            bounce("left");
+        }
     }
 
-    function bounce()
+    function bounce(direction:String)
     {
         hitAreaDown.exists = false;
         hitAreaLeft.exists = false;
@@ -46,7 +57,7 @@ class BonusBlock extends Block
 
         isEmpty = true;
 
-        createItem();
+        createItem(direction);
 
         var startY = this.y;
         FlxTween.tween(this, {y: startY - 8}, 0.05) .wait(0.05) .then(FlxTween.tween(this, {y: startY}, 0.05, {onComplete: function(_) 
@@ -58,7 +69,7 @@ class BonusBlock extends Block
         }}));
     }
 
-    override private function createItem()
+    override private function createItem(direction:String)
     {
         switch(content)
         {
@@ -70,7 +81,20 @@ class BonusBlock extends Block
                 if (Global.PS.player.currentState == SMALL)
                 {
                     var egg:Egg = new Egg(this.x, this.y);
-                    egg.spawnFromBlock();
+
+                    if (direction == "left")
+                    {
+                        egg.spawnFromBlock("left");
+                    }
+                    else if (direction == "right")
+                    {
+                        egg.spawnFromBlock("right");
+                    }
+                    else
+                    {
+                        trace("Unsupported direction! Supported directions are \"left\" and \"right\".");
+                    }
+
                     Global.PS.items.add(egg);
                 }
                 else

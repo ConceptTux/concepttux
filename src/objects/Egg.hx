@@ -58,13 +58,27 @@ class Egg extends VPBSprite
         tux.bigTux();
     }
 
-    public function spawnFromBlock()
+    public function spawnFromBlock(direction:String)
     {
         solid = false;
         physics.gravityEnabled = false;
+        movementEnabled = false;
 
         var startY = this.y;
-        
+
+        if (direction == "left")
+        {
+            this.direction = -1;
+        }
+        else if (direction == "right")
+        {
+            this.direction = 1;
+        }
+        else
+        {
+            trace("Unsupported direction! Supported directions are \"left\" and \"right\".");
+        }
+
         FlxTween.tween(this, {y: startY - 32}, 0.5, {onComplete: function(_) 
         {
             physics.gravityEnabled = true;

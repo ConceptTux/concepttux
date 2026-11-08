@@ -83,7 +83,7 @@ class BrickBlock extends Block
                 isEmpty = true;
             }
 
-            createItem();
+            createItem("");
             amount -= 1;
 
             FlxTween.tween(this, {y: startY - 8}, 0.05) .wait(0.05) .then(FlxTween.tween(this, {y: startY}, 0.05, 
@@ -127,7 +127,7 @@ class BrickBlock extends Block
         kill();
     }
 
-    override private function createItem()
+    override private function createItem(direction:String)
     {
         var coin:Coin = new Coin(this.x, this.y);
         coin.collect();

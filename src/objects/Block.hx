@@ -50,7 +50,7 @@ class Block extends FlxSprite
     }
 
     // Blocks override this
-    function createItem()
+    function createItem(direction:String)
     {
     }
 }

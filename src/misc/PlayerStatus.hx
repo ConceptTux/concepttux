@@ -25,7 +25,7 @@ class PlayerStatus extends FlxSpriteGroup
     {
         super();
 
-        font = STFont.load("data/fonts/white.stf");
+        font = STFont.load("data/fonts/yellow.stf");
 
         coinStatus = new FlxSprite();
         coinStatus.loadGraphic("data/images/engine/hud/coins.png");
