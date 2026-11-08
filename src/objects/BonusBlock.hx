@@ -20,7 +20,7 @@ class BonusBlock extends Block
     // override public function hit(tux:Player, badguy:Badguy)
     override public function hit(tux:Player)
     {
-        if (!hitFromBelowCheck(tux))
+        if (!hitCheck(tux))
         {
             return;
         }
@@ -52,6 +52,7 @@ class BonusBlock extends Block
         hitAreaDown.exists = false;
         hitAreaLeft.exists = false;
         hitAreaRight.exists = false;
+        hitAreaUp.exists = false;
 
         FlxG.sound.play("data/sounds/brick.wav");
 
@@ -65,6 +66,7 @@ class BonusBlock extends Block
             hitAreaDown.exists = true;
             hitAreaLeft.exists = true;
             hitAreaRight.exists = true;
+            hitAreaUp.exists = true;
             empty(_);
         }}));
     }

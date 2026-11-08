@@ -163,6 +163,11 @@ class PlayState extends FlxState
 			{
 				area.block.hit(player);
 			}
+
+			if (area.direction == UP && player.actualButtjump)
+			{
+				area.block.hit(player);
+			}
 		});
 
 		FlxG.overlap(entities, badguys, function(entity:FlxSprite, badguy:Badguy) 

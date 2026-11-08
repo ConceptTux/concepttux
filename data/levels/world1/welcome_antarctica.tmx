@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="left-down" width="310" height="19" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="11" nextobjectid="302">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="left-down" width="310" height="19" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="11" nextobjectid="308">
  <properties>
   <property name="Bottom Color" type="color" value="#ffffffff"/>
   <property name="Level Name" value="Welcome To Antarctica"/>
@@ -155,16 +155,6 @@
     <property name="direction" value="auto"/>
    </properties>
   </object>
-  <object id="287" type="snowball" gid="2482" x="2568" y="448" width="32" height="32">
-   <properties>
-    <property name="direction" value="auto"/>
-   </properties>
-  </object>
-  <object id="288" type="snowball" gid="2482" x="2952" y="448" width="32" height="32">
-   <properties>
-    <property name="direction" value="auto"/>
-   </properties>
-  </object>
   <object id="290" type="snowball" gid="2482" x="4008" y="320" width="32" height="32">
    <properties>
     <property name="direction" value="auto"/>
@@ -190,21 +180,15 @@
     <property name="direction" value="auto"/>
    </properties>
   </object>
-  <object id="296" type="snowball" gid="2482" x="8560" y="224" width="32" height="32">
-   <properties>
-    <property name="direction" value="auto"/>
-   </properties>
-  </object>
-  <object id="295" type="snowball" gid="2482" x="7520" y="448" width="32" height="32">
-   <properties>
-    <property name="direction" value="auto"/>
-   </properties>
-  </object>
   <object id="289" type="snowball" gid="2482" x="2912" y="448" width="32" height="32">
    <properties>
     <property name="direction" value="auto"/>
    </properties>
   </object>
+  <object id="302" type="smartball" gid="2484" x="2952.38" y="448" width="32" height="32"/>
+  <object id="303" type="smartball" gid="2484" x="7520" y="448" width="32" height="32"/>
+  <object id="304" type="iceblock" gid="2483" x="2568" y="448" width="32" height="32"/>
+  <object id="307" type="jumpy" gid="2485" x="8560" y="192" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="6" name="Level">
   <object id="248" type="checkpoint" gid="2490" x="5328" y="320" width="32" height="32"/>

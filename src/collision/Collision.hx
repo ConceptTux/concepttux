@@ -1539,4 +1539,75 @@ class Collision
 
         return false;
     }
+
+    public static function hasGroundAhead(body:FlxObject, solids:FlxGroup, physics:Physics, direction:Int, ?maxStepUp:Float = 8, ?maxStepDown:Float = 8):Bool
+    {
+        if (body == null || solids == null || physics == null || direction == 0)
+        {
+            return false;
+        }
+
+        final probeX = direction > 0 ? body.x + body.width + skin : body.x - skin;
+        final feetY = body.y + body.height;
+        final downhillDrop = physics.groundSlope * direction > 0 ? Math.abs(physics.groundSlope) * body.width : 0.0;
+
+        for (member in solids.members)
+        {
+            if (member == null || !member.exists || !member.alive)
+            {
+                continue;
+            }
+
+            if (!Std.isOfType(member, FlxObject))
+            {
+                continue;
+            }
+
+            final solid:FlxObject = cast member;
+
+            if (solid == body || !solid.active || !solid.solid || solid.width <= 0 || solid.height <= 0)
+            {
+                continue;
+            }
+
+            if (!canCollide(body.allowCollisions, solid.allowCollisions, 0, -1))
+            {
+                continue;
+            }
+
+            if (Std.isOfType(solid, SlopeSolid))
+            {
+                final slope:SlopeSolid = cast solid;
+
+                if (probeX < slope.x - skin || probeX > slope.x + slope.width + skin)
+                {
+                    continue;
+                }
+
+                final surfaceY = slope.surfaceYAt(probeX);
+                final allowedDrop = maxStepDown + body.width * Math.max(Math.abs(physics.groundSlope), slope.gradient);
+
+                if (surfaceY >= feetY - maxStepUp && surfaceY <= feetY + allowedDrop)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (probeX < solid.x - skin || probeX > solid.x + solid.width + skin)
+                {
+                    continue;
+                }
+
+                final allowedDrop = maxStepDown + downhillDrop;
+
+                if (solid.y >= feetY - maxStepUp && solid.y <= feetY + allowedDrop)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

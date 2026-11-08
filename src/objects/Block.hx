@@ -34,14 +34,17 @@ class Block extends FlxSprite
     {
     }
 
-    public function hitFromBelowCheck(tux:Player)
+    public function hitCheck(tux:Player)
     {
         if (tux == null)
         {
             return false;
         }
 
-        return tux.y > (y + height - hitTolerance) && tux.physics.velocityY <= 0;
+        var below = tux.y > (y + height - hitTolerance) && tux.physics.velocityY <= 0;
+        var above = tux.getBottom() < (y + hitTolerance) && tux.actualButtjump;
+
+        return below || above;
     }
 
     function empty(_)

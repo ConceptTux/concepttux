@@ -14,7 +14,7 @@ class Snowball extends Badguy
         animation.play("walk");
 
         setSize(32, 32);
-        offset.set(2, 4);
+        offset.set(3, 4);
 
         physics.maxVelocityX = walkSpeed;
     }

@@ -5,6 +5,9 @@ package objects;
 
 // Roll jumping is temporarily removed due to issues.
 
+import badguys.Badguy;
+import flixel.util.FlxColor;
+import flixel.effects.particles.FlxEmitter;
 import misc.VPBSprite;
 import collision.Collision;
 import flixel.util.FlxTimer;
@@ -40,7 +43,7 @@ class Player extends VPBSprite
     var jumpCutRequested:Bool = false;
 
     // Ducking
-    var ducking:Bool = false;
+    public var ducking:Bool = false;
 
     // Skidding
     final skidThreshold:Float = 200;
@@ -48,6 +51,7 @@ class Player extends VPBSprite
     final reverseAccelerationMultiplier:Float = 2.0;
     final skidTime:Float = 0.3;
     var skidTimer:Float = 0.0; // Don't change!
+    var skidDust:FlxEmitter;
 
     // Backflipping
     var backflipping:Bool = false;
@@ -59,7 +63,7 @@ class Player extends VPBSprite
     final backflipRotateSpeed:Float = 0.5;
     var backflipLandingTimer:Float = 0.0; // Don't change!
     final backflipLandingTime:Float = 0.1;
-    var rollJumpRequested:Bool = false;
+    var rollJumpRequested:Bool = false; // TODO: Remove
 
     // Buttjump (aka Ground Pound if you play Mario)
     var fakeButtjump:Bool = false;
@@ -67,6 +71,8 @@ class Player extends VPBSprite
     final buttjumpMinVelocityY:Float = 400;
     var buttjumpBounced:Bool = false;
     var buttjumpSoundPlayed:Bool = false;
+    var buttjumpDustLeft:FlxEmitter;
+    var buttjumpDustRight:FlxEmitter;
     
     // Direction
     public var direction:Int = 1;
@@ -78,6 +84,9 @@ class Player extends VPBSprite
     // Damage
     var canTakeDamage:Bool = true;
     final invSeconds:Float = 1.8;
+
+    // Iceblock
+    public var heldBadguy:Badguy = null;
 
     public function new()
     {
@@ -135,6 +144,11 @@ class Player extends VPBSprite
         animate();
         shootFire();
 
+        if (heldBadguy != null && FlxG.keys.justReleased.CONTROL)
+        {
+            throwEnemy();
+        }
+
         // Extra safety!
         velocity.set(0, 0);
         acceleration.set(0, 0);
@@ -166,7 +180,7 @@ class Player extends VPBSprite
                 animation.play("jump");
             }
         }
-        else if (ducking && skidTimer <= 0 && !backflipping && !(fakeButtjump || actualButtjump))
+        else if (ducking && !backflipping && !(fakeButtjump || actualButtjump))
         {
             animation.play("duck");
         }
@@ -174,7 +188,7 @@ class Player extends VPBSprite
         {
             animation.play("skid");
         }
-        else if (ducking && skidTimer <= 0 && backflipping && !(fakeButtjump || actualButtjump)) // this reveals a bug that i dont want to fix right now (tux doesnt stop ducking when backflip starts!!!!!)
+        else if (ducking && skidTimer <= 0 && backflipping && !(fakeButtjump || actualButtjump)) // this hides a bug that i dont want to fix right now (tux doesnt stop ducking when backflip starts!!!!!)
         {
             animation.play("backflip");
         }
@@ -302,6 +316,8 @@ class Player extends VPBSprite
                             skidTimer = skidTime;
 
                             FlxG.sound.play("data/sounds/skid.wav");
+
+                            createSkidDust();
                         }
                     }
                     else
@@ -418,8 +434,10 @@ class Player extends VPBSprite
                     buttjumpBounced = true;
                     buttjumpSoundPlayed = false;
 
+                    spawnButtjumpDust();
+
                     FlxG.camera.shake(0.03, 0.1);
-                    FlxG.sound.play("data/sounds/brick.wav");
+                    FlxG.sound.play("data/sounds/brick.wav"); // TODO: Replace with new sound or remove
 
                     physics.velocityY = duckJumpHeight;
                     physics.setGravityModifier(1);
@@ -516,7 +534,7 @@ class Player extends VPBSprite
         // FIXME: Sometimes doesn't work (seems to be when the player falls into the void)
         if (Global.coins >= 25)
         {
-            Global.coins -= 25;
+            Global.removeCoins(25);
         }
 
         FlxG.resetState();
@@ -740,5 +758,104 @@ class Player extends VPBSprite
                 FlxG.sound.play("data/sounds/shoot.wav");
             }
         }
+    }
+
+    function createSkidDust()
+    {
+        if (skidDust == null)
+        {
+            skidDust = new FlxEmitter();
+            skidDust.makeParticles(3, 3, FlxColor.fromRGB(102, 102, 102), 25);
+
+            skidDust.launchMode = FlxEmitterMode.CIRCLE;
+            skidDust.lifespan.set(0.8, 0.8);
+            skidDust.acceleration.set(0, 300, 0, 300);
+            skidDust.speed.set(260, 280);
+
+            Global.PS.add(skidDust);
+        }
+
+        var dustX:Float;
+        var slidingRight:Bool = physics.velocityX > 0;
+
+        if (slidingRight)
+        {
+            dustX = getCenterX() + width * 0.5;
+            skidDust.launchAngle.set(320, 340);
+        }
+        else
+        {
+            dustX = getCenterX() - width * 0.5;
+            skidDust.launchAngle.set(200, 220);
+        }
+
+        skidDust.setPosition(dustX, getBottom());
+        skidDust.start(true, 0, 3);
+    }
+
+    function createButtjumpDustEmitter(minAngle:Float, maxAngle:Float):FlxEmitter
+    {
+        var emitter = new FlxEmitter();
+
+        emitter.makeParticles(3, 3, FlxColor.fromRGB(102, 102, 102), 25);
+
+        emitter.launchMode = FlxEmitterMode.CIRCLE;
+        emitter.launchAngle.set(minAngle, maxAngle);
+        emitter.speed.set(260, 280);
+        emitter.acceleration.set(0, 300, 0, 300);
+        emitter.lifespan.set(0.8, 0.8);
+
+        Global.PS.add(emitter);
+
+        return emitter;
+    }
+
+    function spawnButtjumpDust()
+    {
+        if (buttjumpDustLeft == null)
+        {
+            buttjumpDustLeft = createButtjumpDustEmitter(200, 220);
+            buttjumpDustRight = createButtjumpDustEmitter(320, 340);
+        }
+
+        buttjumpDustLeft.setPosition(x, getBottom());
+        buttjumpDustRight.setPosition(x + width, getBottom());
+        buttjumpDustLeft.start(true, 0, 3);
+        buttjumpDustRight.start(true, 0, 3);
+    }
+
+    public function holdEnemy(badguy:Badguy)
+    {
+        // If there's already a held enemy, return
+        if (heldBadguy != null)
+        {
+            return;
+        }
+
+        // If there's no held enemy and player is holding control, pick up enemy
+        if (FlxG.keys.pressed.CONTROL)
+        {
+            if (badguy.pickUp(this))
+            {
+                heldBadguy = badguy;
+            }
+            else
+            {
+                trace(badguy.pickUp(this));
+            }
+        }
+    }
+
+    public function throwEnemy()
+    {
+        // If there's no held enemy, don't do the rest of the function
+        if (heldBadguy == null)
+        {
+            return;
+        }
+
+        // Throw enemy
+        heldBadguy.enemyThrow();
+        heldBadguy = null;
     }
 }

@@ -33,7 +33,7 @@ class BrickBlock extends Block
 
     override public function hit(tux:Player)
     {
-        if (!hitFromBelowCheck(tux))
+        if (!hitCheck(tux))
         {
             return;
         }
@@ -54,6 +54,7 @@ class BrickBlock extends Block
             hitAreaDown.exists = false;
             hitAreaLeft.exists = false;
             hitAreaRight.exists = false;
+            hitAreaUp.exists = false;
 
             if (tux.currentState != SMALL)
             {
@@ -68,6 +69,7 @@ class BrickBlock extends Block
                         hitAreaDown.exists = true;
                         hitAreaLeft.exists = true;
                         hitAreaRight.exists = true;
+                        hitAreaUp.exists = true;
                     }
                 }));
             }
@@ -77,6 +79,7 @@ class BrickBlock extends Block
             hitAreaDown.exists = false;
             hitAreaLeft.exists = false;
             hitAreaRight.exists = false;
+            hitAreaUp.exists = false;
 
             if (amount <= 1)
             {
@@ -98,6 +101,7 @@ class BrickBlock extends Block
                     hitAreaDown.exists = true;
                     hitAreaLeft.exists = true;
                     hitAreaRight.exists = true;
+                    hitAreaUp.exists = true;
                 }
             }));
         }
@@ -108,6 +112,7 @@ class BrickBlock extends Block
         hitAreaDown.kill();
         hitAreaLeft.kill();
         hitAreaRight.kill();
+        hitAreaUp.kill();
 
         var brick_1:BrickParticle = new BrickParticle(x, y, 1);
         var brick_2:BrickParticle = new BrickParticle(x, y + 16, 2);

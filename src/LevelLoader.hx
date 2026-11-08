@@ -1,5 +1,9 @@
 package;
 
+import badguys.Jumpy;
+import badguys.Spiky;
+import badguys.Iceblock;
+import badguys.Smartball;
 import badguys.Badguy;
 import badguys.Snowball;
 import objects.BrickBlock;
@@ -137,6 +141,18 @@ class LevelLoader extends FlxState
                 case "snowball":
                     var direction = getBadguyDirection(object);
                     state.badguys.add(new Snowball(object.x, object.y - 32, direction));
+                case "smartball":
+                    var direction = getBadguyDirection(object);
+                    state.badguys.add(new Smartball(object.x, object.y - 32, direction));
+                case "iceblock":
+                    var direction = getBadguyDirection(object);
+                    state.badguys.add(new Iceblock(object.x, object.y - 30, direction));
+                case "spiky":
+                    var direction = getBadguyDirection(object);
+                    state.badguys.add(new Spiky(object.x, object.y - 32, direction));
+                case "jumpy":
+                    var direction = getBadguyDirection(object);
+                    state.badguys.add(new Jumpy(object.x, object.y - 44, direction));
             }
         }
 
