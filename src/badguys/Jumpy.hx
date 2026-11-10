@@ -9,7 +9,7 @@ class Jumpy extends Badguy
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         loadGraphic("data/images/creatures/badguy/snowjumpy.png", true, 47, 54);
         animation.add("jump", [0, 1, 2], 6.0, false);

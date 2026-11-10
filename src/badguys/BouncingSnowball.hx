@@ -8,7 +8,7 @@ class BouncingSnowball extends Badguy
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         loadGraphic("data/images/creatures/badguy/bouncingsnowball.png", true, 35, 32);
         animation.add("bounce", [0, 1, 2, 3, 4], 8.0, true);

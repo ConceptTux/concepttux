@@ -74,6 +74,7 @@ class Badguy extends VPBSprite
 
         immovable = false;
 
+        spawnDirection = startDirection;
         initDirection(Global.PS.player);
     }
 
@@ -111,6 +112,12 @@ class Badguy extends VPBSprite
                     FlxG.sound.play("data/sounds/iceblock_bump.wav", 1.0, false);
                 }
             }
+        }
+
+        if (!appeared)
+        {
+            physics.velocityX = 0;
+            physics.velocityY = 0;
         }
 
         super.update(elapsed);

@@ -6,7 +6,7 @@ class Snowball extends Badguy
 {
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         loadGraphic("data/images/creatures/badguy/snowball.png", true, 38, 36);
         animation.add("walk", [0, 1, 2, 1], 8.0, true);

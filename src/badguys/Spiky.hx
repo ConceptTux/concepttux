@@ -10,7 +10,7 @@ class Spiky extends Badguy
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         loadGraphic("data/images/creatures/badguy/spiky.png", true, 43, 42);
         animation.add("walk", [0, 1, 2, 1], 8.0, true);

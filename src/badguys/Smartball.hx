@@ -7,7 +7,7 @@ class Smartball extends Badguy
 {
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         loadGraphic("data/images/creatures/badguy/smartball.png", true, 38, 38);
         animation.add("walk", [0, 1, 2, 1], 8.0, true);

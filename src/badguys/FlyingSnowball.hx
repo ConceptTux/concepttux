@@ -10,7 +10,7 @@ class FlyingSnowball extends Badguy
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         loadGraphic("data/images/creatures/badguy/flyingsnowball.png", true, 40, 43);
         animation.add("fly", [0, 1], 8.0, true);

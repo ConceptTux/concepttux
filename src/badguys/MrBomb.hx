@@ -14,7 +14,7 @@ class MrBomb extends Badguy
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
-        super(x, y);
+        super(x, y, startDirection);
 
         fizz = FlxG.sound.create("data/sounds/fizz.wav").setup(0.25, -1, false);
 
