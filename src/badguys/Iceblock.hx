@@ -74,14 +74,5 @@ class Iceblock extends Badguy
 
             flipX = !held.flipX;
         }
-
-        // Doesn't seem to be needed, might've been making things worse?
-        // if (currentHeldEnemyState == MOVING_FLAT && !solid)
-        // {
-        //     if (Collision.canOccupy(this, Global.PS.solids, x, y, width, height))
-        //     {
-        //         solid = true;
-        //     }
-        // }
     }
 }

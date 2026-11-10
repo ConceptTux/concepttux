@@ -1,5 +1,6 @@
 package;
 
+import badguys.MrBomb;
 import badguys.BouncingSnowball;
 import badguys.Jumpy;
 import badguys.Spiky;
@@ -157,6 +158,9 @@ class LevelLoader extends FlxState
                 case "bouncingsnowball":
                     var direction = getBadguyDirection(object);
                     state.badguys.add(new BouncingSnowball(object.x, object.y - 30, direction));
+                case "bomb":
+                    var direction = getBadguyDirection(object);
+                    state.badguys.add(new MrBomb(object.x, object.y - 30, direction));
             }
         }
 
@@ -192,6 +196,7 @@ class LevelLoader extends FlxState
         }
     }
 
+    // TODO: remove? i could see this being useful though...
     static function getFloatProperty(properties:TiledPropertySet, name:String, defaultValue:Float):Float
     {
         var value = properties.get(name);
@@ -206,6 +211,7 @@ class LevelLoader extends FlxState
         return Math.isNaN(parsed) ? defaultValue : parsed;
     }
 
+    // TODO: remove? i could see this being useful though...
     static function getStringProperty(properties:TiledPropertySet, name:String, defaultValue:String):String
     {
         var value = properties.get(name);
@@ -240,6 +246,7 @@ class LevelLoader extends FlxState
         }
     }
 
+    // TODO: remove? i could see this being useful though...
     static function getBoolProperty(properties:TiledPropertySet, name:String, defaultValue:Bool):Bool
     {
         var value = properties.get(name);
@@ -260,6 +267,7 @@ class LevelLoader extends FlxState
         }
     }
 
+    // TODO: Turn into a function that everything can use
     static function resolveTiledImagePath(mapPath:String, imagePath:String):String
     {
         if (imagePath == null || imagePath == "")

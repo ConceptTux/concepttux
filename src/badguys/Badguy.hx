@@ -20,6 +20,12 @@ enum BadguyStates
     DEAD;
 }
 
+enum BombStates
+{
+    WALKING;
+    TICKING;
+}
+
 enum CarryableEnemyStates
 {
     NORMAL;
@@ -33,6 +39,7 @@ class Badguy extends VPBSprite
     // States
     var currentState:BadguyStates = ALIVE;
     var currentHeldEnemyState:CarryableEnemyStates = NORMAL;
+    var currentBombState:BombStates = WALKING;
 
     // Spawn direction
     var spawnDirection:BadguySpawnDirections = AUTO;
@@ -44,6 +51,9 @@ class Badguy extends VPBSprite
     var damageOthers:Bool = false;
     final maxSquishes = 10;
     var squishes = 0; // Don't change this!
+
+    // Bomb Badguy stuff
+    public var bomb:Bool = false;
 
     // Powerup bullet stuff
     var flammable:Bool = true;
@@ -155,13 +165,16 @@ class Badguy extends VPBSprite
 
             squishes += 1;
 
-            if (FlxG.keys.anyPressed([SPACE, UP, W]))
+            if (currentBombState != TICKING)
             {
-                tux.physics.velocityY = tux.minJumpHeight;
-            }
-            else
-            {
-                tux.physics.velocityY = tux.minJumpHeight * 0.5;
+                if (FlxG.keys.anyPressed([SPACE, UP, W]))
+                {
+                    tux.physics.velocityY = tux.minJumpHeight;
+                }
+                else
+                {
+                    tux.physics.velocityY = tux.minJumpHeight * 0.5;
+                }
             }
 
             if (!canBeHeld)
@@ -177,11 +190,11 @@ class Badguy extends VPBSprite
 
                 waitToCollide = 0.25;
 
-                if (currentHeldEnemyState == MOVING_FLAT)
+                if (currentHeldEnemyState == MOVING_FLAT && !bomb)
                 {
                     turnFlat();
                 }
-                else if (currentHeldEnemyState == FLAT)
+                else if (currentHeldEnemyState == FLAT && !bomb)
                 {
                     direction = tux.direction;
                     flipX = !tux.flipX;
@@ -193,6 +206,7 @@ class Badguy extends VPBSprite
                 else
                 {
                     turnFlat();
+                    kill();
                 }
             }
 
@@ -207,7 +221,7 @@ class Badguy extends VPBSprite
                return;
             }
 
-            if (!tuxStomp)
+            if (!tuxStomp && !bomb)
             {
                 direction = tux.direction;
                 flipX = !tux.flipX;
@@ -216,12 +230,22 @@ class Badguy extends VPBSprite
             }
         }
 
+        if (currentBombState == TICKING)
+        {
+            return;
+        }
+
         // Shouldn't get this far unless Tux should actually be damaged
         tux.takeDamage();
     }
 
     override public function kill()
     {
+        if (currentState == DEAD)
+        {
+            return;
+        }
+
         currentState = DEAD;
         
         if (!dieFall) // Squish
@@ -236,7 +260,7 @@ class Badguy extends VPBSprite
             {
                 alive = false;
                 exists = false;
-                visible = false;
+                visible = false; // might not be needed?
             }, 1);
         }
         else // Fall
@@ -260,7 +284,7 @@ class Badguy extends VPBSprite
 
     public function collideOtherBadguy(otherBadguy:Badguy)
     {
-        if (currentState == DEAD || otherBadguy.currentState == DEAD)
+        if (currentState == DEAD || otherBadguy.currentState == DEAD || currentBombState == TICKING || otherBadguy.currentBombState == TICKING)
         {
             return;
         }
@@ -281,6 +305,11 @@ class Badguy extends VPBSprite
 
     public function collideFireball(fireball:Bullet)
     {
+        if (currentState == DEAD)
+        {
+            return;
+        }
+
         fireball.kill();
 
         if (flammable)
@@ -291,7 +320,7 @@ class Badguy extends VPBSprite
 
     public function pickUp(tux:Player):Bool
     {
-        if (!canBeHeld || currentHeldEnemyState != FLAT || held != null)
+        if (!canBeHeld || currentHeldEnemyState != FLAT || held != null || tux.heldBadguy != null)
         {
             return false;
         }
@@ -310,7 +339,10 @@ class Badguy extends VPBSprite
         velocity.set(0, 0);
         acceleration.set(0, 0);
 
-        animation.play("flat");
+        if (!bomb)
+        {
+            animation.play("flat");
+        }
 
         return true;
     }
@@ -381,11 +413,18 @@ class Badguy extends VPBSprite
 
     function kickOrThrow()
     {
-        currentHeldEnemyState = MOVING_FLAT;
+        if (!bomb)
+        {
+            currentHeldEnemyState = MOVING_FLAT;
+            damageOthers = true;
+        }
+        else
+        {
+            currentHeldEnemyState = FLAT;
+        }
 
         solid = true;
 
-        damageOthers = true;
         held = null;
         waitToCollide = 0.25;
 
@@ -397,14 +436,29 @@ class Badguy extends VPBSprite
         physics.accelerationX = 0;
         physics.accelerationY = 0;
 
-        FlxG.sound.play("data/sounds/kick.wav");
+        if (!bomb)
+        {
+            FlxG.sound.play("data/sounds/kick.wav");
+        }
     }
 
     function turnFlat()
     {
-        animation.play("flat");
+        if (!bomb)
+        {
+            animation.play("flat");
+        }
+
         currentHeldEnemyState = FLAT;
         physics.velocityX = 0;
-        FlxG.sound.play("data/sounds/stomp.wav");
+
+        if (!bomb)
+        {
+            FlxG.sound.play("data/sounds/stomp.wav");
+        }
+        else
+        {
+            FlxG.sound.play("data/sounds/squish.wav");
+        }
     }
 }

@@ -179,8 +179,7 @@ class PlayState extends FlxState
 
 			if (Std.isOfType(entity, Bullet))
 			{
-				badguy.killFall();
-				entity.kill();
+				badguy.collideFireball(cast entity);
 			}
 		});
 

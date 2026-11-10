@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="left-down" width="310" height="19" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="11" nextobjectid="310">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="left-down" width="310" height="19" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="15" nextobjectid="312">
  <properties>
   <property name="Bottom Color" type="color" value="#ffffffff"/>
   <property name="Level Name" value="Welcome To Antarctica"/>
@@ -8,7 +8,7 @@
  </properties>
  <tileset firstgid="1" source="../../tilesets/tiles.tsx"/>
  <tileset firstgid="2481" source="../../tilesets/characters.tsx"/>
- <tileset firstgid="2489" source="../../tilesets/objects.tsx"/>
+ <tileset firstgid="2490" source="../../tilesets/objects.tsx"/>
  <imagelayer id="9" name="BackgroundImage" offsetx="0" offsety="-640" repeatx="1">
   <image source="../../images/background/arctis2.png" width="1664" height="1040"/>
   <properties>
@@ -39,110 +39,110 @@
   <object id="134" gid="2481" x="96" y="448" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="5" name="Objects">
-  <object id="135" type="coin" gid="2489" x="1696" y="352" width="32" height="32"/>
-  <object id="142" type="coin" gid="2489" x="2144" y="288" width="32" height="32"/>
-  <object id="136" type="coin" gid="2489" x="1728" y="352" width="32" height="32"/>
-  <object id="141" type="coin" gid="2489" x="2176" y="288" width="32" height="32"/>
-  <object id="137" type="coin" gid="2489" x="1760" y="352" width="32" height="32"/>
-  <object id="140" type="coin" gid="2489" x="2208" y="288" width="32" height="32"/>
-  <object id="138" type="coin" gid="2489" x="1792" y="352" width="32" height="32"/>
-  <object id="143" type="coin" gid="2489" x="1408" y="288" width="32" height="32"/>
-  <object id="144" type="coin" gid="2489" x="1376" y="288" width="32" height="32"/>
-  <object id="145" type="coin" gid="2489" x="1344" y="288" width="32" height="32"/>
-  <object id="146" type="coin" gid="2489" x="1312" y="288" width="32" height="32"/>
-  <object id="147" type="coin" gid="2489" x="1280" y="288" width="32" height="32"/>
-  <object id="139" type="coin" gid="2489" x="2240" y="288" width="32" height="32"/>
-  <object id="155" type="coin" gid="2489" x="3008" y="352" width="32" height="32"/>
-  <object id="156" type="coin" gid="2489" x="3040" y="352" width="32" height="32"/>
-  <object id="157" type="coin" gid="2489" x="3072" y="352" width="32" height="32"/>
-  <object id="158" type="coin" gid="2489" x="3104" y="352" width="32" height="32"/>
-  <object id="159" type="coin" gid="2489" x="3136" y="352" width="32" height="32"/>
-  <object id="160" type="coin" gid="2489" x="3200" y="256" width="32" height="32"/>
-  <object id="161" type="coin" gid="2489" x="3232" y="256" width="32" height="32"/>
-  <object id="162" type="coin" gid="2489" x="3264" y="256" width="32" height="32"/>
-  <object id="163" type="coin" gid="2489" x="3296" y="256" width="32" height="32"/>
-  <object id="164" type="coin" gid="2489" x="3328" y="256" width="32" height="32"/>
-  <object id="167" type="coin" gid="2489" x="4128" y="160" width="32" height="32"/>
-  <object id="170" type="coin" gid="2489" x="4160" y="160" width="32" height="32"/>
-  <object id="173" type="coin" gid="2489" x="4192" y="160" width="32" height="32"/>
-  <object id="209" type="coin" gid="2489" x="7680" y="352" width="32" height="32"/>
-  <object id="301" type="coin" gid="2489" x="7232" y="352" width="32" height="32"/>
-  <object id="176" type="coin" gid="2489" x="4224" y="160" width="32" height="32"/>
-  <object id="208" type="coin" gid="2489" x="7712" y="352" width="32" height="32"/>
-  <object id="300" type="coin" gid="2489" x="7264" y="352" width="32" height="32"/>
-  <object id="183" type="coin" gid="2489" x="4288" y="160" width="32" height="32"/>
-  <object id="205" type="coin" gid="2489" x="7776" y="352" width="32" height="32"/>
-  <object id="299" type="coin" gid="2489" x="7328" y="352" width="32" height="32"/>
-  <object id="179" type="coin" gid="2489" x="4256" y="160" width="32" height="32"/>
-  <object id="207" type="coin" gid="2489" x="7744" y="352" width="32" height="32"/>
-  <object id="298" type="coin" gid="2489" x="7296" y="352" width="32" height="32"/>
-  <object id="182" type="coin" gid="2489" x="4320" y="160" width="32" height="32"/>
-  <object id="206" type="coin" gid="2489" x="7808" y="352" width="32" height="32"/>
-  <object id="297" type="coin" gid="2489" x="7360" y="352" width="32" height="32"/>
-  <object id="210" type="coin" gid="2489" x="8576" y="448" width="32" height="32"/>
-  <object id="215" type="coin" gid="2489" x="8544" y="448" width="32" height="32"/>
-  <object id="211" type="coin" gid="2489" x="8576" y="416" width="32" height="32"/>
-  <object id="220" type="coin" gid="2489" x="8672" y="416" width="32" height="32"/>
-  <object id="221" type="coin" gid="2489" x="8704" y="384" width="32" height="32"/>
-  <object id="222" type="coin" gid="2489" x="8704" y="416" width="32" height="32"/>
-  <object id="223" type="coin" gid="2489" x="8704" y="448" width="32" height="32"/>
-  <object id="224" type="coin" gid="2489" x="8736" y="416" width="32" height="32"/>
-  <object id="225" type="coin" gid="2489" x="8768" y="416" width="32" height="32"/>
-  <object id="226" type="coin" gid="2489" x="8800" y="416" width="32" height="32"/>
-  <object id="216" type="coin" gid="2489" x="8544" y="416" width="32" height="32"/>
-  <object id="212" type="coin" gid="2489" x="8576" y="384" width="32" height="32"/>
-  <object id="217" type="coin" gid="2489" x="8544" y="384" width="32" height="32"/>
-  <object id="213" type="coin" gid="2489" x="8576" y="352" width="32" height="32"/>
-  <object id="218" type="coin" gid="2489" x="8544" y="352" width="32" height="32"/>
-  <object id="214" type="coin" gid="2489" x="8576" y="320" width="32" height="32"/>
-  <object id="219" type="coin" gid="2489" x="8544" y="320" width="32" height="32"/>
-  <object id="168" type="coin" gid="2489" x="4128" y="128" width="32" height="32"/>
-  <object id="171" type="coin" gid="2489" x="4160" y="128" width="32" height="32"/>
-  <object id="174" type="coin" gid="2489" x="4192" y="128" width="32" height="32"/>
-  <object id="177" type="coin" gid="2489" x="4224" y="128" width="32" height="32"/>
-  <object id="185" type="coin" gid="2489" x="4288" y="128" width="32" height="32"/>
-  <object id="180" type="coin" gid="2489" x="4256" y="128" width="32" height="32"/>
-  <object id="184" type="coin" gid="2489" x="4320" y="128" width="32" height="32"/>
-  <object id="169" type="coin" gid="2489" x="4128" y="96" width="32" height="32"/>
-  <object id="172" type="coin" gid="2489" x="4160" y="96" width="32" height="32"/>
-  <object id="175" type="coin" gid="2489" x="4192" y="96" width="32" height="32"/>
-  <object id="178" type="coin" gid="2489" x="4224" y="96" width="32" height="32"/>
-  <object id="187" type="coin" gid="2489" x="4288" y="96" width="32" height="32"/>
-  <object id="181" type="coin" gid="2489" x="4256" y="96" width="32" height="32"/>
-  <object id="186" type="coin" gid="2489" x="4320" y="96" width="32" height="32"/>
-  <object id="249" type="bonus_coin" gid="2491" x="384" y="352" width="32" height="32"/>
-  <object id="256" type="bonus_powerup" gid="2491" x="1248" y="352" width="32" height="32"/>
-  <object id="250" type="bonus_coin" gid="2491" x="448" y="352" width="32" height="32"/>
-  <object id="255" type="bonus_coin" gid="2491" x="1312" y="352" width="32" height="32"/>
-  <object id="251" type="bonus_coin" gid="2491" x="512" y="352" width="32" height="32"/>
-  <object id="254" type="bonus_coin" gid="2491" x="1376" y="352" width="32" height="32"/>
-  <object id="252" type="bonus_coin" gid="2491" x="576" y="352" width="32" height="32"/>
-  <object id="253" type="bonus_coin" gid="2491" x="1440" y="352" width="32" height="32"/>
-  <object id="257" type="bonus_coin" gid="2491" x="3808" y="224" width="32" height="32"/>
-  <object id="262" type="bonus_powerup" gid="2491" x="3904" y="224" width="32" height="32"/>
-  <object id="258" type="bonus_coin" gid="2491" x="3840" y="224" width="32" height="32"/>
-  <object id="261" type="bonus_coin" gid="2491" x="3936" y="224" width="32" height="32"/>
-  <object id="259" type="bonus_coin" gid="2491" x="3872" y="224" width="32" height="32"/>
-  <object id="260" type="bonus_coin" gid="2491" x="3968" y="224" width="32" height="32"/>
-  <object id="263" type="bonus_coin" gid="2491" x="4576" y="352" width="32" height="32"/>
-  <object id="264" type="bonus_coin" gid="2491" x="4608" y="352" width="32" height="32"/>
-  <object id="270" type="bonus_coin" gid="2491" x="4608" y="224" width="32" height="32"/>
-  <object id="265" type="bonus_coin" gid="2491" x="4640" y="352" width="32" height="32"/>
-  <object id="269" type="bonus_coin" gid="2491" x="4640" y="224" width="32" height="32"/>
-  <object id="271" type="bonus_coin" gid="2491" x="4640" y="96" width="32" height="32"/>
-  <object id="272" type="bonus_coin" gid="2491" x="5328" y="256" width="32" height="32"/>
-  <object id="273" type="bonus_powerup" gid="2491" x="6432" y="160" width="32" height="32"/>
-  <object id="274" type="bonus_coin" gid="2491" x="7616" y="352" width="32" height="32"/>
-  <object id="275" type="bonus_coin" gid="2491" x="8160" y="352" width="32" height="32"/>
-  <object id="266" type="bonus_coin" gid="2491" x="4672" y="352" width="32" height="32"/>
-  <object id="268" type="bonus_coin" gid="2491" x="4672" y="224" width="32" height="32"/>
-  <object id="267" type="bonus_coin" gid="2491" x="4704" y="352" width="32" height="32"/>
-  <object id="276" type="brick" gid="2509" x="416" y="352" width="32" height="32"/>
-  <object id="282" type="brick" gid="2509" x="1280" y="352" width="32" height="32"/>
-  <object id="277" type="brick" gid="2509" x="480" y="352" width="32" height="32"/>
-  <object id="281" type="brick" gid="2509" x="1344" y="352" width="32" height="32"/>
-  <object id="278" type="brick" gid="2509" x="544" y="352" width="32" height="32"/>
-  <object id="280" type="brick" gid="2509" x="1408" y="352" width="32" height="32"/>
+  <object id="135" type="coin" gid="2490" x="1696" y="352" width="32" height="32"/>
+  <object id="142" type="coin" gid="2490" x="2144" y="288" width="32" height="32"/>
+  <object id="136" type="coin" gid="2490" x="1728" y="352" width="32" height="32"/>
+  <object id="141" type="coin" gid="2490" x="2176" y="288" width="32" height="32"/>
+  <object id="137" type="coin" gid="2490" x="1760" y="352" width="32" height="32"/>
+  <object id="140" type="coin" gid="2490" x="2208" y="288" width="32" height="32"/>
+  <object id="138" type="coin" gid="2490" x="1792" y="352" width="32" height="32"/>
+  <object id="143" type="coin" gid="2490" x="1408" y="288" width="32" height="32"/>
+  <object id="144" type="coin" gid="2490" x="1376" y="288" width="32" height="32"/>
+  <object id="145" type="coin" gid="2490" x="1344" y="288" width="32" height="32"/>
+  <object id="146" type="coin" gid="2490" x="1312" y="288" width="32" height="32"/>
+  <object id="147" type="coin" gid="2490" x="1280" y="288" width="32" height="32"/>
+  <object id="139" type="coin" gid="2490" x="2240" y="288" width="32" height="32"/>
+  <object id="155" type="coin" gid="2490" x="3008" y="352" width="32" height="32"/>
+  <object id="156" type="coin" gid="2490" x="3040" y="352" width="32" height="32"/>
+  <object id="157" type="coin" gid="2490" x="3072" y="352" width="32" height="32"/>
+  <object id="158" type="coin" gid="2490" x="3104" y="352" width="32" height="32"/>
+  <object id="159" type="coin" gid="2490" x="3136" y="352" width="32" height="32"/>
+  <object id="160" type="coin" gid="2490" x="3200" y="256" width="32" height="32"/>
+  <object id="161" type="coin" gid="2490" x="3232" y="256" width="32" height="32"/>
+  <object id="162" type="coin" gid="2490" x="3264" y="256" width="32" height="32"/>
+  <object id="163" type="coin" gid="2490" x="3296" y="256" width="32" height="32"/>
+  <object id="164" type="coin" gid="2490" x="3328" y="256" width="32" height="32"/>
+  <object id="167" type="coin" gid="2490" x="4128" y="160" width="32" height="32"/>
+  <object id="170" type="coin" gid="2490" x="4160" y="160" width="32" height="32"/>
+  <object id="173" type="coin" gid="2490" x="4192" y="160" width="32" height="32"/>
+  <object id="209" type="coin" gid="2490" x="7680" y="352" width="32" height="32"/>
+  <object id="301" type="coin" gid="2490" x="7232" y="352" width="32" height="32"/>
+  <object id="176" type="coin" gid="2490" x="4224" y="160" width="32" height="32"/>
+  <object id="208" type="coin" gid="2490" x="7712" y="352" width="32" height="32"/>
+  <object id="300" type="coin" gid="2490" x="7264" y="352" width="32" height="32"/>
+  <object id="183" type="coin" gid="2490" x="4288" y="160" width="32" height="32"/>
+  <object id="205" type="coin" gid="2490" x="7776" y="352" width="32" height="32"/>
+  <object id="299" type="coin" gid="2490" x="7328" y="352" width="32" height="32"/>
+  <object id="179" type="coin" gid="2490" x="4256" y="160" width="32" height="32"/>
+  <object id="207" type="coin" gid="2490" x="7744" y="352" width="32" height="32"/>
+  <object id="298" type="coin" gid="2490" x="7296" y="352" width="32" height="32"/>
+  <object id="182" type="coin" gid="2490" x="4320" y="160" width="32" height="32"/>
+  <object id="206" type="coin" gid="2490" x="7808" y="352" width="32" height="32"/>
+  <object id="297" type="coin" gid="2490" x="7360" y="352" width="32" height="32"/>
+  <object id="210" type="coin" gid="2490" x="8576" y="448" width="32" height="32"/>
+  <object id="215" type="coin" gid="2490" x="8544" y="448" width="32" height="32"/>
+  <object id="211" type="coin" gid="2490" x="8576" y="416" width="32" height="32"/>
+  <object id="220" type="coin" gid="2490" x="8672" y="416" width="32" height="32"/>
+  <object id="221" type="coin" gid="2490" x="8704" y="384" width="32" height="32"/>
+  <object id="222" type="coin" gid="2490" x="8704" y="416" width="32" height="32"/>
+  <object id="223" type="coin" gid="2490" x="8704" y="448" width="32" height="32"/>
+  <object id="224" type="coin" gid="2490" x="8736" y="416" width="32" height="32"/>
+  <object id="225" type="coin" gid="2490" x="8768" y="416" width="32" height="32"/>
+  <object id="226" type="coin" gid="2490" x="8800" y="416" width="32" height="32"/>
+  <object id="216" type="coin" gid="2490" x="8544" y="416" width="32" height="32"/>
+  <object id="212" type="coin" gid="2490" x="8576" y="384" width="32" height="32"/>
+  <object id="217" type="coin" gid="2490" x="8544" y="384" width="32" height="32"/>
+  <object id="213" type="coin" gid="2490" x="8576" y="352" width="32" height="32"/>
+  <object id="218" type="coin" gid="2490" x="8544" y="352" width="32" height="32"/>
+  <object id="214" type="coin" gid="2490" x="8576" y="320" width="32" height="32"/>
+  <object id="219" type="coin" gid="2490" x="8544" y="320" width="32" height="32"/>
+  <object id="168" type="coin" gid="2490" x="4128" y="128" width="32" height="32"/>
+  <object id="171" type="coin" gid="2490" x="4160" y="128" width="32" height="32"/>
+  <object id="174" type="coin" gid="2490" x="4192" y="128" width="32" height="32"/>
+  <object id="177" type="coin" gid="2490" x="4224" y="128" width="32" height="32"/>
+  <object id="185" type="coin" gid="2490" x="4288" y="128" width="32" height="32"/>
+  <object id="180" type="coin" gid="2490" x="4256" y="128" width="32" height="32"/>
+  <object id="184" type="coin" gid="2490" x="4320" y="128" width="32" height="32"/>
+  <object id="169" type="coin" gid="2490" x="4128" y="96" width="32" height="32"/>
+  <object id="172" type="coin" gid="2490" x="4160" y="96" width="32" height="32"/>
+  <object id="175" type="coin" gid="2490" x="4192" y="96" width="32" height="32"/>
+  <object id="178" type="coin" gid="2490" x="4224" y="96" width="32" height="32"/>
+  <object id="187" type="coin" gid="2490" x="4288" y="96" width="32" height="32"/>
+  <object id="181" type="coin" gid="2490" x="4256" y="96" width="32" height="32"/>
+  <object id="186" type="coin" gid="2490" x="4320" y="96" width="32" height="32"/>
+  <object id="249" type="bonus_coin" gid="2492" x="384" y="352" width="32" height="32"/>
+  <object id="256" type="bonus_powerup" gid="2492" x="1248" y="352" width="32" height="32"/>
+  <object id="250" type="bonus_coin" gid="2492" x="448" y="352" width="32" height="32"/>
+  <object id="255" type="bonus_coin" gid="2492" x="1312" y="352" width="32" height="32"/>
+  <object id="251" type="bonus_coin" gid="2492" x="512" y="352" width="32" height="32"/>
+  <object id="254" type="bonus_coin" gid="2492" x="1376" y="352" width="32" height="32"/>
+  <object id="252" type="bonus_coin" gid="2492" x="576" y="352" width="32" height="32"/>
+  <object id="253" type="bonus_coin" gid="2492" x="1440" y="352" width="32" height="32"/>
+  <object id="257" type="bonus_coin" gid="2492" x="3808" y="224" width="32" height="32"/>
+  <object id="262" type="bonus_powerup" gid="2492" x="3904" y="224" width="32" height="32"/>
+  <object id="258" type="bonus_coin" gid="2492" x="3840" y="224" width="32" height="32"/>
+  <object id="261" type="bonus_coin" gid="2492" x="3936" y="224" width="32" height="32"/>
+  <object id="259" type="bonus_coin" gid="2492" x="3872" y="224" width="32" height="32"/>
+  <object id="260" type="bonus_coin" gid="2492" x="3968" y="224" width="32" height="32"/>
+  <object id="263" type="bonus_coin" gid="2492" x="4576" y="352" width="32" height="32"/>
+  <object id="264" type="bonus_coin" gid="2492" x="4608" y="352" width="32" height="32"/>
+  <object id="270" type="bonus_coin" gid="2492" x="4608" y="224" width="32" height="32"/>
+  <object id="265" type="bonus_coin" gid="2492" x="4640" y="352" width="32" height="32"/>
+  <object id="269" type="bonus_coin" gid="2492" x="4640" y="224" width="32" height="32"/>
+  <object id="271" type="bonus_coin" gid="2492" x="4640" y="96" width="32" height="32"/>
+  <object id="272" type="bonus_coin" gid="2492" x="5328" y="256" width="32" height="32"/>
+  <object id="273" type="bonus_powerup" gid="2492" x="6432" y="160" width="32" height="32"/>
+  <object id="274" type="bonus_coin" gid="2492" x="7616" y="352" width="32" height="32"/>
+  <object id="275" type="bonus_coin" gid="2492" x="8160" y="352" width="32" height="32"/>
+  <object id="266" type="bonus_coin" gid="2492" x="4672" y="352" width="32" height="32"/>
+  <object id="268" type="bonus_coin" gid="2492" x="4672" y="224" width="32" height="32"/>
+  <object id="267" type="bonus_coin" gid="2492" x="4704" y="352" width="32" height="32"/>
+  <object id="276" type="brick" gid="2510" x="416" y="352" width="32" height="32"/>
+  <object id="282" type="brick" gid="2510" x="1280" y="352" width="32" height="32"/>
+  <object id="277" type="brick" gid="2510" x="480" y="352" width="32" height="32"/>
+  <object id="281" type="brick" gid="2510" x="1344" y="352" width="32" height="32"/>
+  <object id="278" type="brick" gid="2510" x="544" y="352" width="32" height="32"/>
+  <object id="280" type="brick" gid="2510" x="1408" y="352" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="10" name="Badguys">
   <object id="284" type="snowball" gid="2482" x="1248" y="448" width="32" height="32">
@@ -170,11 +170,6 @@
     <property name="direction" value="auto"/>
    </properties>
   </object>
-  <object id="293" type="snowball" gid="2482" x="4960" y="448" width="32" height="32">
-   <properties>
-    <property name="direction" value="auto"/>
-   </properties>
-  </object>
   <object id="294" type="snowball" gid="2482" x="7624" y="448" width="32" height="32">
    <properties>
     <property name="direction" value="auto"/>
@@ -190,9 +185,10 @@
   <object id="304" type="iceblock" gid="2483" x="2568" y="448" width="32" height="32"/>
   <object id="307" type="jumpy" gid="2485" x="8560" y="192" width="32" height="32"/>
   <object id="308" type="bouncingsnowball" gid="2487" x="6646" y="356" width="32" height="32"/>
+  <object id="310" type="bomb" gid="2488" x="4960" y="448" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="6" name="Level">
-  <object id="248" type="checkpoint" gid="2490" x="5328" y="320" width="32" height="32"/>
+  <object id="248" type="checkpoint" gid="2491" x="5328" y="320" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="7" name="Solid">
   <object id="148" x="0" y="448" width="3040" height="160"/>

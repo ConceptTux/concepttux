@@ -486,7 +486,7 @@ class Player extends VPBSprite
                     
                     if (!buttjumpSoundPlayed)
                     {
-                        FlxG.sound.play("data/sounds/tuxbuttjump.wav");
+                        FlxG.sound.play("data/sounds/tuxbuttjump.wav", 0.5);
                         buttjumpSoundPlayed = true;
                     }
                 }
