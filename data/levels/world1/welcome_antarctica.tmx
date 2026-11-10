@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="left-down" width="310" height="19" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="15" nextobjectid="312">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="left-down" width="310" height="19" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="15" nextobjectid="314">
  <properties>
   <property name="Bottom Color" type="color" value="#ffffffff"/>
   <property name="Level Name" value="Welcome To Antarctica"/>
@@ -186,6 +186,7 @@
   <object id="307" type="jumpy" gid="2485" x="8560" y="192" width="32" height="32"/>
   <object id="308" type="bouncingsnowball" gid="2487" x="6646" y="356" width="32" height="32"/>
   <object id="310" type="bomb" gid="2488" x="4960" y="448" width="32" height="32"/>
+  <object id="312" type="flyingsnowball" gid="2489" x="7088" y="368" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="6" name="Level">
   <object id="248" type="checkpoint" gid="2491" x="5328" y="320" width="32" height="32"/>

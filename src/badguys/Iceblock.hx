@@ -6,6 +6,7 @@ import badguys.Badguy;
 class Iceblock extends Badguy
 {
     final kickSpeed = 500;
+    final maxDropHeight = 600;
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
@@ -22,30 +23,6 @@ class Iceblock extends Badguy
         canBeHeld = true;
 
         physics.maxVelocityX = walkSpeed;
-    }
-
-    override public function move()
-    {
-        if (currentHeldEnemyState == MOVING_FLAT)
-        {
-            physics.maxVelocityX = kickSpeed;
-            physics.velocityX = direction * kickSpeed;
-        }
-        else if (currentHeldEnemyState == FLAT || currentHeldEnemyState == HELD)
-        {
-            physics.velocityX = 0;
-
-            if (currentHeldEnemyState == HELD)
-            {
-                physics.velocityY = 0;
-                physics.accelerationY = 0;
-                physics.gravityEnabled = false;
-            }
-        }
-        else
-        {
-            physics.velocityX = walkSpeed * direction;
-        }
     }
 
     override public function update(elapsed:Float)
@@ -73,6 +50,38 @@ class Iceblock extends Badguy
             }
 
             flipX = !held.flipX;
+        }
+    }
+
+    override public function move()
+    {
+        if (currentHeldEnemyState == MOVING_FLAT)
+        {
+            physics.maxVelocityX = kickSpeed;
+            physics.velocityX = direction * kickSpeed;
+        }
+        else if (currentHeldEnemyState == FLAT || currentHeldEnemyState == HELD)
+        {
+            physics.velocityX = 0;
+
+            if (currentHeldEnemyState == HELD)
+            {
+                physics.velocityY = 0;
+                physics.accelerationY = 0;
+                physics.gravityEnabled = false;
+            }
+        }
+        else
+        {
+            if (physics.grounded && currentHeldEnemyState == NORMAL) // normal state check is for extra safety
+            {
+                if (!Collision.hasGroundAhead(this, Global.PS.solids, physics, direction, 8, maxDropHeight))
+                {
+                    flipDirection();
+                }
+            }
+
+            physics.velocityX = walkSpeed * direction;
         }
     }
 }

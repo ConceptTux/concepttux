@@ -186,22 +186,31 @@ class Badguy extends VPBSprite
                 if (squishes >= maxSquishes)
                 {
                     killFall();
+                    return;
                 }
 
                 waitToCollide = 0.25;
 
-                if (currentHeldEnemyState == MOVING_FLAT && !bomb)
+                if (!bomb)
                 {
-                    turnFlat();
-                }
-                else if (currentHeldEnemyState == FLAT && !bomb)
-                {
-                    direction = tux.direction;
-                    flipX = !tux.flipX;
-                    currentHeldEnemyState = MOVING_FLAT;
-                    damageOthers = true;
-                    FlxG.sound.play("data/sounds/stomp.wav");
-                    FlxG.sound.play("data/sounds/kick.wav");
+                    if (currentHeldEnemyState == MOVING_FLAT)
+                    {
+                        turnFlat();
+                    }
+                    else if (currentHeldEnemyState == FLAT)
+                    {
+                        direction = tux.direction;
+                        flipX = !tux.flipX;
+                        currentHeldEnemyState = MOVING_FLAT;
+                        damageOthers = true;
+
+                        FlxG.sound.play("data/sounds/stomp.wav");
+                        FlxG.sound.play("data/sounds/kick.wav");
+                    }
+                    else
+                    {
+                        turnFlat();
+                    }
                 }
                 else
                 {
@@ -247,6 +256,12 @@ class Badguy extends VPBSprite
         }
 
         currentState = DEAD;
+
+        if (!physics.gravityEnabled)
+        {
+            physics.gravityEnabled = true;
+            physics.maxVelocityY = Global.gravity;
+        }
         
         if (!dieFall) // Squish
         {

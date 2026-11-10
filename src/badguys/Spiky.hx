@@ -6,7 +6,7 @@ import badguys.Badguy;
 
 class Spiky extends Badguy
 {
-    var maxDropHeight = 600;
+    final maxDropHeight = 600;
 
     public function new(x:Float, y:Float, startDirection:BadguySpawnDirections = BadguySpawnDirections.AUTO)
     {
