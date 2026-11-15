@@ -1,5 +1,6 @@
 package objects;
 
+import badguys.Badguy;
 import flixel.FlxSprite;
 
 class Block extends FlxSprite
@@ -34,7 +35,12 @@ class Block extends FlxSprite
     {
     }
 
-    public function hitCheck(tux:Player)
+    // Blocks override this
+    public function badguyHit(badguy:Badguy)
+    {
+    }
+
+    public function hitCheck(tux:Player):Bool
     {
         if (tux == null)
         {
@@ -45,6 +51,28 @@ class Block extends FlxSprite
         var above = tux.getBottom() < (y + hitTolerance) && tux.actualButtjump;
 
         return below || above;
+    }
+
+    public function badguyHitCheck(badguy:Badguy):Bool
+    {
+        if (badguy.currentHeldEnemyState != MOVING_FLAT && badguy.currentHeldEnemyState != FLAT)
+        {
+            return false;
+        }
+        
+        if (badguy.currentHeldEnemyState == MOVING_FLAT)
+        {
+            var left = badguy.getRight() <= this.x;
+            var right = badguy.x >= this.x + this.width;
+
+            return left || right;
+        }
+        else
+        {
+            var below = badguy.y > (y + height - hitTolerance) && badguy.physics.velocityY <= 0;
+
+            return below;
+        }
     }
 
     function empty(_)

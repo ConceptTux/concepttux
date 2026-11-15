@@ -1,5 +1,8 @@
 package;
 
+import badguys.Stalactite;
+import misc.AnimatedTiles.AnimatedTile;
+import collision.HurtSolid;
 import badguys.FlyingSnowball;
 import badguys.MrBomb;
 import badguys.BouncingSnowball;
@@ -79,9 +82,48 @@ class LevelLoader extends FlxState
         state.map.solid = false;
 
         state.add(backgroundMap);
-        state.add(state.map);
 
-        // Load solids
+        // Load front animated tiles
+        for (object in getLevelObjects(tiledMap, "AnimatedTilesFront"))
+        {
+            switch (object.type)
+            {
+                default:
+                    final spritePath = resolveTiledImagePath(mapPath, getStringProperty(object.properties, "Image", "data/images/engine/missing.png"));
+                    final frameWidth = getIntProperty(object.properties, "Frame Width", 32);
+                    final frameHeight = getIntProperty(object.properties, "Frame Height", 32);
+                    final frames = getIntArray(getStringProperty(object.properties, "Frames", ""));
+                    final fps = getFloatProperty(object.properties, "FPS", 10.0);
+
+                    if (frameWidth <= 0 || frameHeight <= 0 || frames.length == 0)
+                    {
+                        trace("You set up a foreground Animated Tile incorrectly!");
+                    }
+
+                    state.animTilesFront.add(new AnimatedTile(object.x, object.y - frameHeight, spritePath, frameWidth, frameHeight, frames, fps));
+            }
+        }
+
+        for (object in getLevelObjects(tiledMap, "AnimatedTilesBack"))
+        {
+            switch (object.type)
+            {
+                default:
+                    final spritePath = resolveTiledImagePath(mapPath, getStringProperty(object.properties, "Image", "data/images/engine/missing.png"));
+                    final frameWidth = getIntProperty(object.properties, "Frame Width", 32);
+                    final frameHeight = getIntProperty(object.properties, "Frame Height", 32);
+                    final frames = getIntArray(getStringProperty(object.properties, "Frames", ""));
+                    final fps = getFloatProperty(object.properties, "FPS", 10.0);
+
+                    if (frameWidth <= 0 || frameHeight <= 0 || frames.length == 0)
+                    {
+                        trace("You set up a background Animated Tile incorrectly!");
+                    }
+
+                    state.animTilesBack.add(new AnimatedTile(object.x, object.y - frameHeight, spritePath, frameWidth, frameHeight, frames, fps));
+            }
+        }
+
         for (object in getLevelObjects(tiledMap, "Solid"))
         {
             switch (object.type)
@@ -94,6 +136,12 @@ class LevelLoader extends FlxState
                     state.solids.add(new SlopeSolid(object.x, object.y, object.width, object.height, true));
                 case "slope_l":
                     state.solids.add(new SlopeSolid(object.x, object.y, object.width, object.height, false));
+                case "ceiling_slope_r":
+                    state.solids.add(new SlopeSolid(object.x, object.y, object.width, object.height, true, true));
+                case "ceiling_slope_l":
+                    state.solids.add(new SlopeSolid(object.x, object.y, object.width, object.height, false, true));
+                case "hurt":
+                    state.hurtCollision.add(new HurtSolid(object.x, object.y, object.width, object.height, ALL));
             }
         }
 
@@ -103,7 +151,8 @@ class LevelLoader extends FlxState
             switch (object.type)
             {
                 case "goal":
-                    state.items.add(new Goal(object.x, object.y, object.width, object.height));
+                    final stopTux = getBoolProperty(object.properties, "Stop Tux", false);
+                    state.items.add(new Goal(object.x, object.y, object.width, object.height, stopTux));
                 case "checkpoint":
                     state.checkpoint = new Checkpoint(object.x, object.y - 32);
             }
@@ -126,10 +175,16 @@ class LevelLoader extends FlxState
                     var bonusBlockPowerup:BonusBlock = new BonusBlock(object.x, object.y - 32);
                     bonusBlockPowerup.content = "powerup";
                     state.solids.add(bonusBlockPowerup);
+                case "bonus_tuxdoll":
+                    var bonusBlockTuxDoll:BonusBlock = new BonusBlock(object.x, object.y - 32);
+                    bonusBlockTuxDoll.content = "tuxdoll";
+                    state.solids.add(bonusBlockTuxDoll);
                 case "brick":
-                    state.solids.add(new BrickBlock(object.x, object.y - 32));
+                    final spritePath = resolveTiledImagePath(mapPath, getStringProperty(object.properties, "Image", "data/images/objects/brick/brick.png"));
+                    state.solids.add(new BrickBlock(object.x, object.y - 32, spritePath));
                 case "brickCoin":
-                    var brickCoin = new BrickBlock(object.x, object.y - 32);
+                    final spritePath = resolveTiledImagePath(mapPath, getStringProperty(object.properties, "Image", "data/images/objects/brick/brick.png"));
+                    var brickCoin = new BrickBlock(object.x, object.y - 32, spritePath);
                     brickCoin.unbreakable = true;
                     state.solids.add(brickCoin);
             }
@@ -165,6 +220,8 @@ class LevelLoader extends FlxState
                 case "flyingsnowball":
                     var direction = getBadguyDirection(object);
                     state.badguys.add(new FlyingSnowball(object.x, object.y - 32, direction));
+                case "stalactite":
+                    state.badguys.add(new Stalactite(object.x, object.y - 45, AUTO));
             }
         }
 
@@ -200,7 +257,6 @@ class LevelLoader extends FlxState
         }
     }
 
-    // TODO: remove? i could see this being useful though...
     static function getFloatProperty(properties:TiledPropertySet, name:String, defaultValue:Float):Float
     {
         var value = properties.get(name);
@@ -215,7 +271,20 @@ class LevelLoader extends FlxState
         return Math.isNaN(parsed) ? defaultValue : parsed;
     }
 
-    // TODO: remove? i could see this being useful though...
+    static function getIntProperty(properties:TiledPropertySet, name:String, defaultValue:Int):Int
+    {
+        var value = properties.get(name);
+
+        if (value == null || value == "")
+        {
+            return defaultValue;
+        }
+
+        var parsed = Std.parseInt(value);
+
+        return Math.isNaN(parsed) ? defaultValue : parsed;
+    }
+
     static function getStringProperty(properties:TiledPropertySet, name:String, defaultValue:String):String
     {
         var value = properties.get(name);
@@ -226,6 +295,58 @@ class LevelLoader extends FlxState
         }
 
         return value;
+    }
+
+    static function getBoolProperty(properties:TiledPropertySet, name:String, defaultValue:Bool):Bool
+    {
+        var value = properties.get(name);
+
+        if (value == null || value == "")
+        {
+            return defaultValue;
+        }
+
+        switch (value.toLowerCase())
+        {
+            case "true", "1", "yes":
+                return true;
+            case "false", "0", "no":
+                return false;
+            default:
+                return defaultValue;
+        }
+    }
+
+    static function getIntArray(value:String):Array<Int>
+    {
+        var result:Array<Int> = [];
+
+        if (value == null || StringTools.trim(value) == "")
+        {
+            return result;
+        }
+
+        for (part in value.split(","))
+        {
+            final trimmed = StringTools.trim(part);
+
+            if (trimmed == "")
+            {
+                continue;
+            }
+
+            final number = Std.parseInt(trimmed);
+
+            if (number == null)
+            {
+                trace("Invalid integer in array!");
+                return [];
+            }
+
+            result.push(number);
+        }
+
+        return result;
     }
 
     static function parseBackgroundAlignment(value:String):STBackgroundAlignment
@@ -250,28 +371,6 @@ class LevelLoader extends FlxState
         }
     }
 
-    // TODO: remove? i could see this being useful though...
-    static function getBoolProperty(properties:TiledPropertySet, name:String, defaultValue:Bool):Bool
-    {
-        var value = properties.get(name);
-
-        if (value == null || value == "")
-        {
-            return defaultValue;
-        }
-
-        switch (value.toLowerCase())
-        {
-            case "true", "1", "yes":
-                return true;
-            case "false", "0", "no":
-                return false;
-            default:
-                return defaultValue;
-        }
-    }
-
-    // TODO: Turn into a function that everything can use
     static function resolveTiledImagePath(mapPath:String, imagePath:String):String
     {
         if (imagePath == null || imagePath == "")
@@ -309,6 +408,7 @@ class LevelLoader extends FlxState
 
             var imageLayer:TiledImageLayer = cast layer;
 
+            // TODO: Remove (along with removing the load property from all backgrounds)
             if (!getBoolProperty(imageLayer.properties, "Load", false))
             {
                 continue;

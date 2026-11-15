@@ -38,7 +38,7 @@ class Badguy extends VPBSprite
 {
     // States
     var currentState:BadguyStates = ALIVE;
-    var currentHeldEnemyState:CarryableEnemyStates = NORMAL;
+    public var currentHeldEnemyState:CarryableEnemyStates = NORMAL;
     var currentBombState:BombStates = WALKING;
 
     // Spawn direction
@@ -49,6 +49,7 @@ class Badguy extends VPBSprite
     public var held:Player = null;
     var waitToCollide:Float = 0.0;
     var damageOthers:Bool = false;
+    var damageSelf:Bool = false;
     final maxSquishes = 10;
     var squishes = 0; // Don't change this!
 
@@ -63,7 +64,7 @@ class Badguy extends VPBSprite
     var walkSpeed:Int = 80;
     var loadWhenLevelLoads:Bool = false;
     public var direction:Int = -1;
-    var appeared:Bool = false;
+    public var appeared:Bool = false;
     
     // Other
     var dieFall:Bool = false;
@@ -84,12 +85,25 @@ class Badguy extends VPBSprite
         velocity.set(0, 0);
         acceleration.set(0, 0);
         drag.set(0, 0);
+
+        if (Global.levelPaused)
+        {
+            physics.setVelocity(0, 0);
+            physics.setAcceleration(0, 0);
+            physics.gravityEnabled = false;
+
+            super.update(elapsed);
+
+            return;
+        }
         
+        // Waiting to collide
         if (waitToCollide > 0)
         {
             waitToCollide -= elapsed;
         }
 
+        // Check if the badguy is off screen
         if (!offScreenCheck(Global.PS.player))
         {
             appeared = true;
@@ -116,8 +130,8 @@ class Badguy extends VPBSprite
 
         if (!appeared)
         {
-            physics.velocityX = 0;
-            physics.velocityY = 0;
+            physics.setVelocity(0, 0);
+            physics.setAcceleration(0, 0);
         }
 
         super.update(elapsed);
@@ -136,6 +150,11 @@ class Badguy extends VPBSprite
 
     public function interact(tux:Player)
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (currentState == DEAD)
         {
             return;
@@ -200,6 +219,12 @@ class Badguy extends VPBSprite
 
                 if (!bomb)
                 {
+                    if (tux.actualButtjump)
+                    {
+                        killFall();
+                        return;
+                    }
+
                     if (currentHeldEnemyState == MOVING_FLAT)
                     {
                         turnFlat();
@@ -273,8 +298,7 @@ class Badguy extends VPBSprite
         if (!dieFall) // Squish
         {
             FlxG.sound.play("data/sounds/squish.wav");
-            physics.velocityX = 0;
-            physics.velocityY = 0;
+            physics.setVelocity(0, 0);
             physics.accelerationX = 0;
             animation.play("squished");
 
@@ -306,18 +330,30 @@ class Badguy extends VPBSprite
 
     public function collideOtherBadguy(otherBadguy:Badguy)
     {
-        if (currentState == DEAD || otherBadguy.currentState == DEAD || currentBombState == TICKING || otherBadguy.currentBombState == TICKING)
+        if (currentState == DEAD || otherBadguy.currentState == DEAD || currentBombState == TICKING || otherBadguy.currentBombState == TICKING || Global.levelPaused)
         {
             return;
         }
         
-        if (this.damageOthers)
+        if (this.damageOthers || this.damageSelf)
         {
             otherBadguy.killFall();
+
+            if (this.damageSelf)
+            {
+                kickOrThrow();
+                killFall();
+            }
         }
-        else if (otherBadguy.damageOthers)
+        else if (otherBadguy.damageOthers || otherBadguy.damageSelf)
         {
             killFall();
+
+            if (otherBadguy.damageSelf)
+            {
+                otherBadguy.kickOrThrow();
+                otherBadguy.killFall();
+            }
         }
         else
         {
@@ -327,6 +363,11 @@ class Badguy extends VPBSprite
 
     public function collideFireball(fireball:Bullet)
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+        
         if (currentState == DEAD)
         {
             return;
@@ -349,7 +390,7 @@ class Badguy extends VPBSprite
 
         currentHeldEnemyState = HELD;
         held = tux;
-        solid = false;
+        onlyHalfSolid = true;
 
         physics.velocityX = 0;
         physics.velocityY = 0;
@@ -364,6 +405,8 @@ class Badguy extends VPBSprite
         if (!bomb)
         {
             animation.play("flat");
+            damageOthers = true;
+            damageSelf = true;
         }
 
         return true;
@@ -371,18 +414,20 @@ class Badguy extends VPBSprite
 
     public function enemyThrow()
     {
-        if (canBeHeld)
+        if (!canBeHeld)
         {
-            if (currentHeldEnemyState != HELD || held == null)
-            {
-                return;
-            }
-
-            direction = held.direction;
-            flipX = !held.flipX;
-
-            kickOrThrow();
+            return;
         }
+
+        if (currentHeldEnemyState != HELD || held == null)
+        {
+            return;
+        }
+
+        direction = held.direction;
+        flipX = !held.flipX;
+
+        kickOrThrow();
     }
 
     function checkIfHerring(tux:Player):Bool
@@ -439,6 +484,7 @@ class Badguy extends VPBSprite
         {
             currentHeldEnemyState = MOVING_FLAT;
             damageOthers = true;
+            damageSelf = false;
         }
         else
         {
@@ -453,10 +499,8 @@ class Badguy extends VPBSprite
         physics.gravityEnabled = true;
         physics.grounded = false; // extra safety, clears old grounded state just in case!
 
-        physics.velocityX = 0;
-        physics.velocityY = 0;
-        physics.accelerationX = 0;
-        physics.accelerationY = 0;
+        physics.setVelocity(0, 0);
+        physics.setAcceleration(0, 0);
 
         if (!bomb)
         {

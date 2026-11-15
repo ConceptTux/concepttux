@@ -18,6 +18,11 @@ class Coin extends FlxSprite
 
     public function collect()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+        
         alive = false;
         solid = false;
         Global.addCoins(1);

@@ -37,6 +37,11 @@ class FireFlower extends VPBSprite
 
     public function collect(tux:Player)
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+        
         FlxG.sound.play("data/sounds/fire-flower.wav");
         kill();
         tux.fireTux();

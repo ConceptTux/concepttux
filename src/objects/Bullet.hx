@@ -63,6 +63,17 @@ class Bullet extends VPBSprite
         acceleration.set(0, 0);
         drag.set(0, 0);
 
+        if (Global.levelPaused)
+        {
+            physics.setVelocity(0, 0);
+            physics.setAcceleration(0, 0);
+            physics.gravityEnabled = false;
+
+            super.update(elapsed);
+
+            return;
+        }
+
         physics.velocityX = direction * speed2;
 
         if (physics.velocityY > 0)

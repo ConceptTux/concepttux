@@ -1,6 +1,7 @@
 package objects;
 
 // import characters.badguy.Badguy;
+import badguys.Badguy;
 import flixel.FlxG;
 import flixel.tweens.FlxTween;
 import objects.Player;
@@ -17,7 +18,6 @@ class BonusBlock extends Block
         animation.play("normal");
     }
 
-    // override public function hit(tux:Player, badguy:Badguy)
     override public function hit(tux:Player)
     {
         if (!hitCheck(tux))
@@ -44,6 +44,54 @@ class BonusBlock extends Block
         else if (tux.getCenterX() > x + width * 0.5)
         {
             bounce("left");
+        }
+    }
+
+    override public function badguyHit(badguy:Badguy)
+    {
+        if (!badguyHitCheck(badguy))
+        {
+            return;
+        }
+
+        if (isEmpty)
+        {
+            FlxG.sound.play("data/sounds/brick.wav");
+            return;
+        }
+
+        badguy.physics.velocityX = 0;
+
+        if (badguy.currentHeldEnemyState == FLAT)
+        {
+            badguy.physics.velocityY = 0;
+        }
+
+        if (badguy.currentHeldEnemyState == MOVING_FLAT)
+        {
+            if (badguy.getRight() <= this.x)
+            {
+                bounce("right");
+            }
+            else if (badguy.x >= this.x + width)
+            {
+                bounce("left");
+            }
+        }
+        else
+        {
+            if (badguy.getCenterX() < x + width * 0.5)
+            {
+                bounce("right");
+            }
+            else if (badguy.getCenterX() == x + width * 0.5)
+            {
+                bounce("right");
+            }
+            else if (badguy.getCenterX() > x + width * 0.5)
+            {
+                bounce("left");
+            }
         }
     }
 
@@ -107,10 +155,24 @@ class BonusBlock extends Block
                 }
                 
                 FlxG.sound.play("data/sounds/upgrade.wav");
-            // case "tuxdoll":
-            //     var tuxDoll:TuxDoll = new TuxDoll(this.x, Std.int(y - 32));
-            //     Global.PS.td.add(tuxDoll);
-            //     FlxG.sound.play("assets/sounds/upgrade.wav");
+            case "tuxdoll":
+                var tuxDoll:TuxDoll = new TuxDoll(this.x, Std.int(y - 32));
+
+                if (direction == "left")
+                {
+                    tuxDoll.spawnFromBlock("left");
+                }
+                else if (direction == "right")
+                {
+                    tuxDoll.spawnFromBlock("right");
+                }
+                else
+                {
+                    trace("Unsupported direction! Supported directions are \"left\" and \"right\".");
+                }
+
+                Global.PS.items.add(tuxDoll);
+                FlxG.sound.play("data/sounds/upgrade.wav");
         }
     }
 }

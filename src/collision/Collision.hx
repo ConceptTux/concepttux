@@ -305,7 +305,7 @@ class Collision
 
             final slope:SlopeSolid = cast member;
 
-            if (!slope.active || !slope.solid || slope.width <= 0 || slope.height <= 0)
+            if (!slope.active || !slope.solid || slope.width <= 0 || slope.height <= 0 || slope.isCeiling)
             {
                 continue;
             }
@@ -633,6 +633,95 @@ class Collision
         return true;
     }
 
+    static function tryResolveCeilingSlopeContact(body:FlxObject, solids:FlxGroup, slope:SlopeSolid, hitDepth:Float, hitNormalX:Float, hitNormalY:Float, physics:Physics):Bool
+    {
+        final ceilingY = slope.ceilingYForBody(body.x, body.width);
+        final targetY = ceilingY != null ? ceilingY + skin : body.y + hitNormalY * (hitDepth + skin);
+
+        if (canOccupy(body, solids, body.x, targetY, body.width, body.height))
+        {
+            body.y = targetY;
+            body.touching |= UP;
+
+            if (physics != null)
+            {
+                if (physics.velocityY < 0)
+                {
+                    physics.velocityY = 0;
+                }
+
+                physics.grounded = false;
+                physics.groundSlope = 0.0;
+            }
+
+            return true;
+        }
+
+        final primaryDirection = hitNormalX >= 0 ? 1 : -1;
+
+        for (direction in [primaryDirection, -primaryDirection])
+        {
+            final escapeX = findHorizontalSlopeEscape(body, slope, direction);
+
+            if (escapeX == null || !canOccupy(body, solids, escapeX, body.y, body.width, body.height))
+            {
+                continue;
+            }
+
+            body.x = escapeX;
+
+            if (direction < 0)
+            {
+                body.touching |= RIGHT;
+            }
+            else
+            {
+                body.touching |= LEFT;
+            }
+
+            if (physics != null && physics.velocityX * direction < 0)
+            {
+                physics.velocityX = 0;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    static function findHorizontalSlopeEscape(body:FlxObject, slope:SlopeSolid, direction:Int):Null<Float>
+    {
+        final endX = direction < 0 ? slope.x - body.width - skin : slope.x + slope.width + skin;
+
+        final totalDistance = Math.abs(endX - body.x);
+
+        if (totalDistance <= move_epsilon || slope.collideAABB(endX, body.y, body.width, body.height) != null)
+        {
+            return null;
+        }
+
+        var blockedDistance = 0.0;
+        var clearDistance = totalDistance;
+
+        for (_ in 0...24)
+        {
+            final middleDistance = (blockedDistance + clearDistance) * 0.5;
+            final candidateX = body.x + direction * middleDistance;
+
+            if (slope.collideAABB(candidateX, body.y, body.width, body.height) != null)
+            {
+                blockedDistance = middleDistance;
+            }
+            else
+            {
+                clearDistance = middleDistance;
+            }
+        }
+
+        return body.x + direction * (clearDistance + skin);
+    }
+
     static function resolveSlopeContacts(body:FlxObject, solids:FlxGroup, oldX:Float, oldY:Float, endX:Float, endY:Float, moveX:Float, moveY:Float, physics:Physics, ?onCollision:FlxObject->FlxObject->Void):Bool
     {
         var anyResolved = false;
@@ -667,7 +756,7 @@ class Collision
                     continue;
                 }
 
-                if (hit.feature == 0 && hit.normalY < -move_epsilon)
+                if (hit.feature == 0 && hit.normalY < -move_epsilon && !slope.isCeiling)
                 {
                     if (!canCollide(body.allowCollisions, slope.allowCollisions, 0, -1))
                     {
@@ -707,32 +796,48 @@ class Collision
                         continue;
                     }
 
-                    final ceilingY = slope.ceilingYForBody(body.x, body.width);
-
-                    if (ceilingY != null)
+                    if (slope.isCeiling)
                     {
-                        body.y = ceilingY + skin;
+                        if (tryResolveCeilingSlopeContact(body, solids, slope, hit.depth, hit.normalX, hit.normalY, physics))
+                        {
+                            resolvedThisPass = true;
+                            anyResolved = true;
+
+                            if (onCollision != null)
+                            {
+                                onCollision(body, slope);
+                            }
+                        }
                     }
                     else
                     {
-                        body.y += hit.normalY * (hit.depth + skin);
-                    }
+                        final ceilingY = slope.ceilingYForBody(body.x, body.width);
 
-                    body.touching |= UP;
+                        if (ceilingY != null)
+                        {
+                            body.y = ceilingY + skin;
+                        }
+                        else
+                        {
+                            body.y += hit.normalY * (hit.depth + skin);
+                        }
 
-                    if (physics.velocityY < 0)
-                    {
-                        physics.velocityY = 0;
-                    }
+                        body.touching |= UP;
 
-                    physics.grounded = false;
-                    physics.groundSlope = 0.0;
-                    resolvedThisPass = true;
-                    anyResolved = true;
+                        if (physics.velocityY < 0)
+                        {
+                            physics.velocityY = 0;
+                        }
 
-                    if (onCollision != null)
-                    {
-                        onCollision(body, slope);
+                        physics.grounded = false;
+                        physics.groundSlope = 0.0;
+                        resolvedThisPass = true;
+                        anyResolved = true;
+
+                        if (onCollision != null)
+                        {
+                            onCollision(body, slope);
+                        }
                     }
 
                     continue;
@@ -914,8 +1019,9 @@ class Collision
 
             final referenceSurface = slope.surfaceYForBody(referenceX, body.width);
 
-            final bodySpanHeight = body.width * slope.gradient;
-            final movementHeight = Math.abs(moveX) * slope.gradient;
+            final supportGradient = slope.isCeiling ? 0.0 : slope.gradient;
+            final bodySpanHeight = body.width * supportGradient;
+            final movementHeight = Math.abs(moveX) * supportGradient;
             final maximumAcquisitionHeight = bodySpanHeight + movementHeight + supportEpsilon;
 
             if (referenceSurface != null)
@@ -1221,7 +1327,8 @@ class Collision
 
             final currentBottom = body.y + body.height;
             final surfaceDelta = currentBottom - surfaceY;
-            final maximumDownhillChange = Math.abs(moveX) * slope.gradient + slope_ground_tolerance + skin;
+            final supportGradient = slope.isCeiling ? 0.0 : slope.gradient;
+            final maximumDownhillChange = Math.abs(moveX) * supportGradient + slope_ground_tolerance + skin;
 
             if (surfaceDelta > slope_ground_tolerance || surfaceDelta < -maximumDownhillChange)
             {
@@ -1289,7 +1396,7 @@ class Collision
                     continue;
                 }
 
-                if (hit.feature == 0 && hit.normalY < -move_epsilon)
+                if (hit.feature == 0 && hit.normalY < -move_epsilon && !slope.isCeiling)
                 {
                     if (!canCollide(body.allowCollisions, slope.allowCollisions, 0, -1))
                     {
@@ -1314,24 +1421,35 @@ class Collision
 
                 if (hit.feature == 0 && hit.normalY > move_epsilon)
                 {
-                    if (!canCollide(body.allowCollisions, slope.allowCollisions, 0, 1 ))
+                    if (!canCollide(body.allowCollisions, slope.allowCollisions, 0, 1))
                     {
                         continue;
                     }
 
-                    final ceilingY = slope.ceilingYForBody(body.x, body.width);
-
-                    if (ceilingY != null)
+                    if (slope.isCeiling)
                     {
-                        body.y = ceilingY + skin;
-                        body.touching |= UP;
+                        if (tryResolveCeilingSlopeContact(body, solids, slope, hit.depth, hit.normalX, hit.normalY, null))
+                        {
+                            moved = true;
+                        }
                     }
                     else
                     {
-                        body.y += hit.normalY * (hit.depth + skin);
+                        final ceilingY = slope.ceilingYForBody(body.x, body.width);
+
+                        if (ceilingY != null)
+                        {
+                            body.y = ceilingY + skin;
+                            body.touching |= UP;
+                        }
+                        else
+                        {
+                            body.y += hit.normalY * (hit.depth + skin);
+                        }
+
+                        moved = true;
                     }
 
-                    moved = true;
                     continue;
                 }
 
@@ -1585,7 +1703,8 @@ class Collision
                 }
 
                 final surfaceY = slope.surfaceYAt(probeX);
-                final allowedDrop = maxStepDown + body.width * Math.max(Math.abs(physics.groundSlope), slope.gradient);
+                final supportGradient = slope.isCeiling ? 0.0 : slope.gradient;
+                final allowedDrop = maxStepDown + body.width * Math.max(Math.abs(physics.groundSlope), supportGradient);
 
                 if (surfaceY >= feetY - maxStepUp && surfaceY <= feetY + allowedDrop)
                 {

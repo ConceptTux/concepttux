@@ -20,19 +20,22 @@ typedef SlopeAxisResult =
 
 class SlopeSolid extends FlxObject
 {
+    public final isCeiling:Bool;
     public final risesRight:Bool;
 
     public final gradient:Float;
+
     public final surfaceSlope:Float;
 
-    public function new(x:Float, y:Float, width:Float, height:Float, risesRight:Bool)
+    public function new(x:Float, y:Float, width:Float, height:Float, risesRight:Bool, isCeiling:Bool = false)
     {
         super(x, y, width, height);
 
         this.risesRight = risesRight;
+        this.isCeiling = isCeiling;
 
         gradient = width > 0 ? height / width : 0;
-        surfaceSlope = risesRight ? -gradient : gradient;
+        surfaceSlope = isCeiling ? 0 : (risesRight ? -gradient : gradient);
 
         solid = true;
         moves = false;
@@ -53,6 +56,11 @@ class SlopeSolid extends FlxObject
 
     public inline function surfaceYAt(worldX:Float):Float
     {
+        if (isCeiling)
+        {
+            return y;
+        }
+
         var localX = worldX - x;
 
         if (localX < 0)
@@ -77,8 +85,13 @@ class SlopeSolid extends FlxObject
             return null;
         }
 
+        if (isCeiling)
+        {
+            return y;
+        }
+
         final sampleX = risesRight ? overlapRight : overlapLeft;
-        
+
         return lineYAt(sampleX);
     }
 
@@ -266,11 +279,11 @@ class SlopeSolid extends FlxObject
         return switch (index)
         {
             case 0:
-                risesRight ? x : x;
+                x;
             case 1:
                 x + width;
             default:
-                risesRight ? x + width : x;
+                (risesRight == isCeiling) ? x : x + width;
         };
     }
 
@@ -283,7 +296,7 @@ class SlopeSolid extends FlxObject
             case 1:
                 risesRight ? y : y + height;
             default:
-                y + height;
+                isCeiling ? y : y + height;
         };
     }
 
@@ -385,6 +398,10 @@ class SlopeSolid extends FlxObject
                 new SlopeSolid(x, y, width, height, true);
             case "slope_l":
                 new SlopeSolid(x, y, width, height, false);
+            case "ceiling_slope_r":
+                new SlopeSolid(x, y, width, height, true, true);
+            case "ceiling_slope_l":
+                new SlopeSolid(x, y, width, height, false, true);
         };
     }
 

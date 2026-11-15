@@ -50,11 +50,11 @@ class Player extends VPBSprite
     final skidAccelerationMultiplier:Float = 2.5;
     final reverseAccelerationMultiplier:Float = 2.0;
     final skidTime:Float = 0.3;
-    var skidTimer:Float = 0.0; // Don't change!
+    public var skidTimer:Float = 0.0; // Don't change!
     var skidDust:FlxEmitter;
 
     // Backflipping
-    var backflipping:Bool = false;
+    public var backflipping:Bool = false;
     var backflipDirection:Int = 1;
     var backflipElapsed:Float = 0.0; // Don't change!
     var backflipTimer:Float = 0.0; // Don't change!
@@ -88,6 +88,9 @@ class Player extends VPBSprite
     // Iceblock
     public var heldBadguy:Badguy = null;
 
+    // Cutscene
+    public var inCutscene:Bool = false;
+
     public function new()
     {
         super();
@@ -101,22 +104,35 @@ class Player extends VPBSprite
 
     override public function update(elapsed:Float)
     {
+        if (Global.levelPaused)
+        {
+            velocity.set(0, 0);
+            acceleration.set(0, 0);
+            drag.set(0, 0);
+
+            physics.setVelocity(0, 0);
+            physics.setAcceleration(0, 0);
+            physics.gravityEnabled = false;
+
+            return;
+        }
+
         // Debug
-        if (FlxG.keys.justPressed.ONE)
+        if (FlxG.keys.justPressed.ONE && !inCutscene)
         {
             smallTux();
         }
-        if (FlxG.keys.justPressed.TWO)
+        if (FlxG.keys.justPressed.TWO && !inCutscene)
         {
             bigTux();
         }
-        if (FlxG.keys.justPressed.THREE)
+        if (FlxG.keys.justPressed.THREE && !inCutscene)
         {
             fireTux();
         }
 
         // Noot button (not my idea)
-        if (FlxG.keys.justPressed.Q)
+        if (FlxG.keys.justPressed.Q && !inCutscene)
         {
             FlxG.sound.play("data/sounds/noot.wav");
         }
@@ -139,12 +155,15 @@ class Player extends VPBSprite
             die();
         }
 
-        // Functions
-        move(elapsed);
-        animate();
-        shootFire();
+        if (!inCutscene)
+        {
+            move(elapsed);
+            shootFire();
+        }
 
-        if (heldBadguy != null && FlxG.keys.justReleased.CONTROL)
+        animate();
+
+        if (heldBadguy != null && (FlxG.keys.justReleased.CONTROL || inCutscene))
         {
             throwEnemy();
         }
@@ -203,6 +222,11 @@ class Player extends VPBSprite
 
     function move(elapsed:Float)
     {
+        if (Global.levelPaused || inCutscene) // TODO: don't just return when in cutscene (this will let the getting key cutscene work)
+        {
+            return;
+        }
+
         // Jump buffer timer thing
         if (jumpBuffer > 0)
         {
@@ -512,6 +536,11 @@ class Player extends VPBSprite
 
     function applyFriction()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (physics.grounded && Math.abs(physics.velocityX) < walkStartSpeed)
         {
             physics.velocityX = 0;
@@ -531,7 +560,6 @@ class Player extends VPBSprite
 
     public function die()
     {
-        // FIXME: Sometimes doesn't work (seems to be when the player falls into the void)
         if (Global.coins >= 25)
         {
             Global.removeCoins(25);
@@ -542,9 +570,16 @@ class Player extends VPBSprite
 
     public function takeDamage()
     {
+        if (Global.levelPaused || inCutscene)
+        {
+            return;
+        }
+
         if (canTakeDamage)
         {
             canTakeDamage = false;
+
+            physics.velocityX = 0; // Reset velocityX because SuperTux does that (I think)
 
             Global.PS.maximumBullets = 0;
 
@@ -662,6 +697,11 @@ class Player extends VPBSprite
 
     function setDucking(value:Bool):Bool
     {
+        if (Global.levelPaused)
+        {
+            return false;
+        }
+
         if (value == ducking)
         {
             return true;
@@ -702,6 +742,11 @@ class Player extends VPBSprite
     // Unfinished?
     function doBackflip()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (!ducking || backflipping)
         {
             return;
@@ -733,6 +778,11 @@ class Player extends VPBSprite
 
     function stopBackflip()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (backflipping)
         {
             backflipping = false;
@@ -744,6 +794,11 @@ class Player extends VPBSprite
 
     function shootFire()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (Global.PS.maximumBullets > 0 && currentState == FIRE)
         {
             if (FlxG.keys.justPressed.CONTROL && Global.PS.activeBullets < Global.PS.maximumBullets)
@@ -762,6 +817,11 @@ class Player extends VPBSprite
 
     function createSkidDust()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (skidDust == null)
         {
             skidDust = new FlxEmitter();
@@ -795,6 +855,11 @@ class Player extends VPBSprite
 
     function createButtjumpDustEmitter(minAngle:Float, maxAngle:Float):FlxEmitter
     {
+        if (Global.levelPaused)
+        {
+            return null;
+        }
+
         var emitter = new FlxEmitter();
 
         emitter.makeParticles(3, 3, FlxColor.fromRGB(102, 102, 102), 25);
@@ -812,6 +877,11 @@ class Player extends VPBSprite
 
     function spawnButtjumpDust()
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         if (buttjumpDustLeft == null)
         {
             buttjumpDustLeft = createButtjumpDustEmitter(200, 220);
@@ -826,6 +896,11 @@ class Player extends VPBSprite
 
     public function holdEnemy(badguy:Badguy)
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         // If there's already a held enemy, return
         if (heldBadguy != null)
         {
@@ -848,8 +923,7 @@ class Player extends VPBSprite
 
     public function throwEnemy()
     {
-        // If there's no held enemy, don't do the rest of the function
-        if (heldBadguy == null)
+        if (Global.levelPaused || heldBadguy == null)
         {
             return;
         }

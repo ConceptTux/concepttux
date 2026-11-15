@@ -23,6 +23,9 @@ enum AllowedSides
 class VPBSprite extends FlxSprite
 {
     public var physics:Physics;
+
+    /** Whether the thing is ONLY overlappable */
+    public var onlyHalfSolid = false;
     
     public function new(x:Float = 0, y:Float = 0)
     {

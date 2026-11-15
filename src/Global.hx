@@ -31,10 +31,14 @@ class Global
     public static var levelName:String;
     public static var gravity:Int = 1000;
     public static var maxFallSpeed:Int = 2000;
+    public static var levelPaused:Bool = false;
 
     // Checkpoint stuff
     public static var checkpointReached:Bool = false;
     public static var checkpointPosition:FlxPoint;
+
+    // Goal stuff
+    public static var goalReached:Bool = false;
 
     // Current song that's playing (Could be turned into a bool?)
     public static var currentSong:String;

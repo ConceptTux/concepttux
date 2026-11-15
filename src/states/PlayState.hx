@@ -1,5 +1,8 @@
 package states;
 
+import objects.TuxDoll;
+import misc.AnimatedTiles.AnimatedTile;
+import collision.HurtSolid;
 import objects.FireFlower;
 import objects.Bullet;
 import misc.VPBSprite;
@@ -41,6 +44,9 @@ class PlayState extends FlxState
 	public var blocks(default, null):FlxTypedGroup<BlockArea>;
 	public var badguys(default, null):FlxTypedGroup<Badguy>;
 	public var bullets(default, null):FlxTypedGroup<Bullet>;
+	public var hurtCollision(default, null):FlxTypedGroup<HurtSolid>;
+	public var animTilesBack(default, null):FlxTypedGroup<AnimatedTile>;
+	public var animTilesFront(default, null):FlxTypedGroup<AnimatedTile>;
 	
 	/* If you're planning on adding more things (like enemies)
 	   that can't go in the items group, add them to entities!
@@ -70,6 +76,10 @@ class PlayState extends FlxState
 		// Just so Global.PS actually works...
 		Global.PS = this;
 
+		// Unpause the level
+		Global.levelPaused = false;
+		FlxG.timeScale = 1.0;
+
 		// Add things part 2
 		entities = new FlxGroup();
 		solids = new FlxGroup();
@@ -79,6 +89,11 @@ class PlayState extends FlxState
 		bullets = new FlxTypedGroup<Bullet>();
 		blocks = new FlxTypedGroup<BlockArea>();
 		badguys = new FlxTypedGroup<Badguy>();
+		hurtCollision = new FlxTypedGroup<HurtSolid>();
+		animTilesBack = new FlxTypedGroup<AnimatedTile>();
+		animTilesFront = new FlxTypedGroup<AnimatedTile>();
+
+		// Add playerStatus
 		playerStatus = new PlayerStatus();
 
 		// The number of the level to load
@@ -95,6 +110,9 @@ class PlayState extends FlxState
 		entities.add(items);
 		entities.add(itemsFlxSprite);
 		entities.add(badguys);
+		add(animTilesBack);
+		add(map);
+		add(hurtCollision);
 		add(solids);
 		add(blocks);
 		add(checkpoint);
@@ -109,6 +127,8 @@ class PlayState extends FlxState
         foregroundMap.solid = false;
 
 		add(foregroundMap);
+		
+		add(animTilesFront);
 
 		// Camera
 		levelCamera = new STCamera();
@@ -128,11 +148,9 @@ class PlayState extends FlxState
 
 		Collision.resolve(player, solids, player.physics, elapsed);
 
-		// what the hell is all this
-		// nvm it's because badguy.physics
 		for (badguy in badguys.members)
 		{
-			if (badguy != null && badguy.exists)
+			if (badguy != null && badguy.exists && badguy.appeared)
 			{
 				Collision.resolve(badguy, solids, badguy.physics, elapsed);
 			}
@@ -142,7 +160,22 @@ class PlayState extends FlxState
 		{
 			if (item != null && item.exists)
 			{
-				Collision.resolve(item, solids, item.physics, elapsed);
+				if (item.onlyHalfSolid)
+				{
+					item.physics.grounded = false;
+					item.physics.groundSlope = 0;
+
+					item.physics.integrate(elapsed);
+
+					item.x += item.physics.velocityX * elapsed;
+					item.y += item.physics.velocityY * elapsed;
+
+					item.velocity.set(item.physics.velocityX, item.physics.velocityY);
+				}
+				else
+				{
+					Collision.resolve(item, solids, item.physics, elapsed);
+				}
 			}
 		}
 
@@ -183,6 +216,26 @@ class PlayState extends FlxState
 			}
 		});
 
+		OverlapUtil.overlapOnce(badguys, blocks, function(badguy:Badguy, area:BlockArea)
+		{
+			trace("aaa");
+			
+			if (area.direction == LEFT || area.direction == RIGHT || area.direction == DOWN)
+			{
+				area.block.badguyHit(badguy);
+			}
+		});
+
+		FlxG.overlap(player, hurtCollision, function(tux:Player, solid:HurtSolid) 
+		{
+			tux.takeDamage();
+		});
+
+		FlxG.overlap(badguys, hurtCollision, function(badguy:Badguy, solid:HurtSolid) 
+		{
+			badguy.killFall();
+		});
+
 		// Update camera
 		levelCamera.update(player, elapsed, map.width, map.height);
 
@@ -195,7 +248,7 @@ class PlayState extends FlxState
 
 	function collideEntities(entity:FlxSprite, player:Player)
 	{
-		if (Std.isOfType(entity, Coin))
+		if (Std.isOfType(entity, Coin) || Std.isOfType(entity, TuxDoll))
 		{
 			(cast entity).collect();
 		}
@@ -216,6 +269,11 @@ class PlayState extends FlxState
 		
 		if (Std.isOfType(entity, Badguy))
 		{
+			if ((cast entity).onlyHalfSolid)
+			{
+				return;
+			}
+
 			(cast entity).interact(player);
 		}
 	}

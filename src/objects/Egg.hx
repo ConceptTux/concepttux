@@ -30,6 +30,21 @@ class Egg extends VPBSprite
 
     override public function update(elapsed:Float)
     {
+        if (Global.levelPaused)
+        {
+            physics.setVelocity(0, 0);
+            physics.setAcceleration(0, 0);
+            physics.gravityEnabled = false;
+
+            velocity.set(0, 0);
+            acceleration.set(0, 0);
+            drag.set(0, 0);
+
+            super.update(elapsed);
+
+            return;
+        }
+
         // Movement
         if (movementEnabled)
         {
@@ -53,6 +68,11 @@ class Egg extends VPBSprite
 
     public function collect(tux:Player)
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+
         FlxG.sound.play("data/sounds/grow.ogg");
         kill();
         tux.bigTux();
@@ -60,6 +80,11 @@ class Egg extends VPBSprite
 
     public function spawnFromBlock(direction:String)
     {
+        if (Global.levelPaused)
+        {
+            return;
+        }
+        
         solid = false;
         physics.gravityEnabled = false;
         movementEnabled = false;
