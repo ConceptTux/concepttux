@@ -41,7 +41,7 @@
             "frames": [13],
             "fps": 10.0,
             "loop": false,
-            "hitbox": {"width": 30, "height": 60, "offsetX": 17, "offsetY": 20}
+            "hitbox": {"width": 30, "height": 31, "offsetX": 17, "offsetY": 49}
         },
         {
             "name": "buttjump",

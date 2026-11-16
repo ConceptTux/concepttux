@@ -594,15 +594,11 @@ class Player extends VPBSprite
             
             if (currentState == FIRE)
             {
-                currentState = BIG;
-                reloadGraphics();
+                bigTux();
             }
             else if (currentState == BIG)
             {
-                var prevBottom = y + height;
-                currentState = SMALL;
-                reloadGraphics();
-                y = prevBottom - height;
+                smallTux();
             }
             else if (currentState == SMALL)
             {
