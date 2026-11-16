@@ -187,35 +187,35 @@ class Player extends VPBSprite
                 // If the player is on the floor and staying where they are, stand
                 if (physics.velocityX == 0 || isWalkingIntoWall())
                 {
-                    animation.play("stand");
+                    playAnimation("stand");
                 }
                 else
                 {
-                    animation.play("walk");
+                    playAnimation("walk");
                 }
             }
             else
             {
-                animation.play("jump");
+                playAnimation("jump");
             }
         }
         else if (ducking && !backflipping && !(fakeButtjump || actualButtjump))
         {
-            animation.play("duck");
+            playAnimation("duck");
         }
         else if (!ducking && skidTimer > 0 && !backflipping && !(fakeButtjump || actualButtjump))
         {
-            animation.play("skid");
+            playAnimation("skid");
         }
         else if (ducking && skidTimer <= 0 && backflipping && !(fakeButtjump || actualButtjump)) // this hides a bug that i dont want to fix right now (tux doesnt stop ducking when backflip starts!!!!!)
         {
-            animation.play("backflip");
+            playAnimation("backflip");
         }
         else if (!ducking && skidTimer <= 0 && !backflipping && (fakeButtjump || actualButtjump))
         {
             if (animation.name != "buttjump")
             {
-                animation.play("buttjump");   
+                playAnimation("buttjump");
             }
         }
     }
@@ -615,9 +615,10 @@ class Player extends VPBSprite
     {
         if (currentState != SMALL)
         {
-            var prevBottom = y + height;
+            final prevBottom = y + height;
             currentState = SMALL;
             reloadGraphics();
+            playAnimation(animation.name ?? "stand", true);
             y = prevBottom - height;
         }
     }
@@ -626,10 +627,17 @@ class Player extends VPBSprite
     {
         if (currentState == SMALL)
         {
-            var smallHeight = height;
+            final smallHeight = height;
             currentState = BIG;
             reloadGraphics();
+            playAnimation(animation.name ?? "stand", true);
             y -= height - smallHeight;
+        }
+        else
+        {
+            currentState = BIG;
+            reloadGraphics();
+            playAnimation(animation.name ?? "stand", true);
         }
     }
 
@@ -639,12 +647,14 @@ class Player extends VPBSprite
         {
             currentState = FIRE;
             reloadGraphics();
+            playAnimation(animation.name ?? "stand", true);
         }
         else
         {
-            var smallHeight = height;
+            final smallHeight = height;
             currentState = FIRE;
             reloadGraphics();
+            playAnimation(animation.name ?? "stand", true);
             y -= height - smallHeight;
         }
 
@@ -654,44 +664,19 @@ class Player extends VPBSprite
     public function reloadGraphics()
     {
         animation.reset();
+        hitboxes.clear();
 
         switch(currentState)
         {
             case SMALL:
                 loadGraphic("data/images/creatures/tux/small_tux.png", true, 49, 48);
-                animation.add("stand", [0], 10.0, false);
-                animation.add("walk", [1, 2, 3, 4, 5, 6, 7, 8], 15.0, true);
-                animation.add("jump", [9], 10.0, false);
-                animation.add("kick", [10], 10.0, false);
-                animation.add("skid", [11], 10.0, false);
-                setSize(30, 31);
-                offset.set(9, 17);
+                loadAnimations("data/characters/smalltux.json");
             case BIG:
                 loadGraphic("data/images/creatures/tux/big_tux.png", true, 64, 80);
-                animation.add("stand", [0], 10.0, false);
-                animation.add("walk", [1, 2, 3, 4, 5, 6, 7, 8], 15.0, true);
-                animation.add("idle", [9, 10, 9, 0], 5.0, false);
-                animation.add("duck", [12], 10.0, false);
-                animation.add("jump", [11], 10.0, false);
-                animation.add("backflip", [13], 10.0, false);
-                animation.add("buttjump", [14, 15, 16, 17, 18, 19, 20], 15.0, false);
-                animation.add("kick", [21], 10.0, false);
-                animation.add("skid", [22], 10.0, false);
-                setSize(30, 60);
-                offset.set(17, 20);
+                loadAnimations("data/characters/bigtux.json");
             case FIRE:
                 loadGraphic("data/images/creatures/tux/fire_tux.png", true, 64, 80);
-                animation.add("stand", [0], 10.0, false);
-                animation.add("walk", [1, 2, 3, 4, 5, 6], 15.0, true);
-                animation.add("idle", [7, 8, 7], 5.0, false);
-                animation.add("duck", [9], 10.0, false);
-                animation.add("jump", [10], 10.0, false);
-                animation.add("backflip", [11], 10.0, false);
-                animation.add("buttjump", [12], 10.0, false);
-                animation.add("kick", [13], 10.0, false);
-                animation.add("skid", [14], 10.0, false);
-                setSize(30, 60);
-                offset.set(17, 20);
+                loadAnimations("data/characters/bigtux.json");
         }
     }
 
@@ -710,11 +695,12 @@ class Player extends VPBSprite
         if (value)
         {
             final oldHeight = height;
+            final duckBox = hitboxes.get("duck");
 
-            setSize(30, 31);
-            offset.set(17, 49);
-
-            y += oldHeight - height;
+            if (duckBox != null)
+            {
+                y += oldHeight - duckBox.height;
+            }
 
             ducking = true;
 
@@ -722,7 +708,9 @@ class Player extends VPBSprite
         }
 
         final oldHeight = height;
-        final newHeight = 60.0;
+        final standBox = hitboxes.get("stand");
+        final newWidth = standBox != null ? standBox.width : 30.0;
+        final newHeight = standBox != null ? standBox.height : 60.0;
         final standY = y - (newHeight - oldHeight);
 
         if (!Collision.canOccupy(this, Global.PS.solids, x, standY, 30, newHeight))
@@ -730,8 +718,6 @@ class Player extends VPBSprite
             return false;
         }
 
-        setSize(30, newHeight);
-        offset.set(17, 20);
         y = standY;
 
         ducking = false;

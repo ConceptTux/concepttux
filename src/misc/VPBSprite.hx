@@ -1,11 +1,16 @@
 package misc;
 
+import haxe.Json;
+import openfl.Assets;
 import physics.Physics;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
 import flixel.util.FlxColor;
 import flixel.util.FlxDirectionFlags;
+
+typedef HitboxData = {width:Float, height:Float, offsetX:Float, offsetY:Float}
+typedef AnimationData = {name:String, frames:Array<Int>, fps:Int, loop:Bool, ?hitbox:HitboxData}
 
 enum AllowedSides
 {
@@ -26,6 +31,8 @@ class VPBSprite extends FlxSprite
 
     /** Whether the thing is ONLY overlappable */
     public var onlyHalfSolid = false;
+
+    public var hitboxes:Map<String, HitboxData> = new Map();
     
     public function new(x:Float = 0, y:Float = 0)
     {
@@ -125,5 +132,38 @@ class VPBSprite extends FlxSprite
     function isWalkingIntoWall()
     {
         return (physics.velocityX > 0 && isTouching(RIGHT)) || (physics.velocityX < 0 && isTouching(LEFT));
+    }
+
+    public function loadAnimations(jsonPath:String)
+    {
+        var rawJson = Assets.getText(jsonPath);
+        var data:{animations:Array<AnimationData>} = Json.parse(rawJson);
+
+        for (anim in data.animations)
+        {
+            animation.add(anim.name, anim.frames, anim.fps, anim.loop);
+
+            if (anim.hitbox != null)
+            {
+                hitboxes.set(anim.name, anim.hitbox);
+            }
+        }
+    }
+
+    public function playAnimation(name:String, force:Bool = false)
+    {
+        if (animation.name == name && !force)
+        {
+            return;
+        }
+        
+        animation.play(name, force);
+
+        if (hitboxes.exists(name))
+        {
+            var hitbox = hitboxes.get(name);
+            setSize(hitbox.width, hitbox.height);
+            offset.set(hitbox.offsetX ?? 0, hitbox.offsetY ?? 0);
+        }
     }
 }
