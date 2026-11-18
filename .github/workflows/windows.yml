@@ -34,6 +34,7 @@ jobs:
           haxelib install lime
           haxelib install flixel
           haxelib install flixel-addons
+          haxelib install hscript
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
