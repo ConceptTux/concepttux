@@ -33,6 +33,7 @@ jobs:
           haxelib install lime
           haxelib install flixel
           haxelib install flixel-addons
+          haxelib install hscript
       - name: Compile
         run: haxelib run lime build linux
       - name: Publish Artifact
