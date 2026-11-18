@@ -1,0 +1,47 @@
+{
+    "animations": 
+    [
+        {
+            "name": "stand",
+            "frames": [5],
+            "fps": 10.0,
+            "loop": false,
+            "hitbox": {"width": 30, "height": 31, "offsetX": 13, "offsetY": 17}
+        },
+        {
+            "name": "walk",
+            "frames": [0, 1, 2, 3, 4, 5, 6, 7],
+            "fps": 15.0,
+            "loop": true,
+            "hitbox": {"width": 30, "height": 31, "offsetX": 13, "offsetY": 17}
+        },
+        {
+            "name": "jump",
+            "frames": [8],
+            "fps": 10.0,
+            "loop": false,
+            "hitbox": {"width": 30, "height": 31, "offsetX": 13, "offsetY": 17}
+        },
+        {
+            "name": "kick",
+            "frames": [9],
+            "fps": 10.0,
+            "loop": false,
+            "hitbox": {"width": 30, "height": 31, "offsetX": 13, "offsetY": 17}
+        },
+        {
+            "name": "skid",
+            "frames": [10],
+            "fps": 10.0,
+            "loop": false,
+            "hitbox": {"width": 30, "height": 31, "offsetX": 13, "offsetY": 17}
+        },
+        {
+            "name": "dead",
+            "frames": [11, 12],
+            "fps": 10.0,
+            "loop": true,
+            "hitbox": {"width": 30, "height": 31, "offsetX": 13, "offsetY": 17}
+        }
+    ]
+}

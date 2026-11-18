@@ -1,3 +1,5 @@
+// MIT License as it has a function copied from cne-flixel. See LICENSE_FLIXEL.md for more info
+
 package misc;
 
 import haxe.Json;

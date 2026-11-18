@@ -1,5 +1,25 @@
+//  SuperTux Rebuilt
+//  Copyright (C) 2026 Vaesea <sophieballvaesea@proton.me>
+//                2026 AnatolyStev
+//
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; either version 2
+//  of the License, or (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 package states;
 
+import objects.ScriptTrigger;
+import misc.LevelScript;
 import objects.TuxDoll;
 import misc.AnimatedTiles.AnimatedTile;
 import collision.HurtSolid;
@@ -18,7 +38,6 @@ import objects.Player;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
@@ -47,6 +66,7 @@ class PlayState extends FlxState
 	public var hurtCollision(default, null):FlxTypedGroup<HurtSolid>;
 	public var animTilesBack(default, null):FlxTypedGroup<AnimatedTile>;
 	public var animTilesFront(default, null):FlxTypedGroup<AnimatedTile>;
+	public var scripts(default, null):FlxTypedGroup<ScriptTrigger>;
 	
 	/* If you're planning on adding more things (like enemies)
 	   that can't go in the items group, add them to entities!
@@ -60,10 +80,11 @@ class PlayState extends FlxState
 	public var checkpoint:Checkpoint;
 
 	var levelCamera:STCamera;
+	public var levelBackgrounds:Array<STBackground> = [];
+
+	public var levelScript:LevelScript;
 
 	public var playerStatus:PlayerStatus;
-
-	public var levelBackgrounds:Array<STBackground> = [];
 
 	// Bullets
     public var activeBullets:Int = 0; // Don't change this!
@@ -92,6 +113,7 @@ class PlayState extends FlxState
 		hurtCollision = new FlxTypedGroup<HurtSolid>();
 		animTilesBack = new FlxTypedGroup<AnimatedTile>();
 		animTilesFront = new FlxTypedGroup<AnimatedTile>();
+		scripts = new FlxTypedGroup<ScriptTrigger>();
 
 		// Add playerStatus
 		playerStatus = new PlayerStatus();
@@ -114,10 +136,13 @@ class PlayState extends FlxState
 		add(map);
 		add(hurtCollision);
 		add(solids);
+		add(scripts);
 		add(blocks);
 		add(checkpoint);
 		add(entities);
 		add(player);
+
+		levelScript = new LevelScript();
 
 		// Add foreground tiles (I tried thinking of a better way to add this but I'm too tired)
 		var foregroundLayer:TiledTileLayer = cast LevelLoader.tiledMap.getLayer("Foreground");
@@ -139,7 +164,14 @@ class PlayState extends FlxState
 		playerStatus.cameras = [FlxG.camera];
 		playerStatus.scrollFactor.set(0, 0);
 
-		openSubState(new IntroSubState(FlxColor.BLACK));
+		if (!Global.restart)
+		{
+			openSubState(new IntroSubState(FlxColor.BLACK));
+		}
+		else
+		{
+			FlxG.camera.stopFade();
+		}
 	}
 
 	override public function update(elapsed:Float)
@@ -203,6 +235,25 @@ class PlayState extends FlxState
 			}
 		});
 
+		OverlapUtil.overlapOnce(player, scripts, function(tux:Player, st:ScriptTrigger)
+		{
+			if ((st.triggered) || (st.script == null || st.script == ""))
+			{
+				return;
+			}
+
+			st.triggered = true;
+			levelScript.runCode(st.script);
+		});
+
+		for (s in scripts)
+		{
+			if (!FlxG.overlap(player, s) && s.triggered && !s.oneShot)
+			{
+				s.triggered = false;
+			}
+		}
+
 		FlxG.overlap(entities, badguys, function(entity:FlxSprite, badguy:Badguy) 
 		{
 			if (Std.isOfType(entity, Badguy))
@@ -218,8 +269,6 @@ class PlayState extends FlxState
 
 		OverlapUtil.overlapOnce(badguys, blocks, function(badguy:Badguy, area:BlockArea)
 		{
-			trace("aaa");
-			
 			if (area.direction == LEFT || area.direction == RIGHT || area.direction == DOWN)
 			{
 				area.block.badguyHit(badguy);

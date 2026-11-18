@@ -1,3 +1,21 @@
+//  SuperTux Rebuilt
+//  Copyright (C) 2025, 2026 Vaesea <sophieballvaesea@proton.me>
+//                      2026 AnatolyStev
+//
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; either version 2
+//  of the License, or (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 package objects;
 
 // Buttjumping still has an issue (You can skid when you hit the ground after the bounce when Tux should really just duck. He ducks after that though? But if you time stuff right, that can act weird too).
@@ -83,7 +101,10 @@ class Player extends VPBSprite
 
     // Damage
     var canTakeDamage:Bool = true;
+    var dead:Bool = false;
     final invSeconds:Float = 1.8;
+    final deadJump:Int = -700;
+    final restartTime:Float = 3.0;
 
     // Iceblock
     public var heldBadguy:Badguy = null;
@@ -179,6 +200,12 @@ class Player extends VPBSprite
     // One frame late but that's ok!
     function animate()
     {
+        if (dead && currentState == SMALL)
+        {
+            playAnimation("dead");
+            return;
+        }
+
         if (!ducking && skidTimer <= 0 && !backflipping && !(fakeButtjump || actualButtjump))
         {
             // If Tux is on the ground, play stand or walk
@@ -222,7 +249,7 @@ class Player extends VPBSprite
 
     function move(elapsed:Float)
     {
-        if (Global.levelPaused || inCutscene) // TODO: don't just return when in cutscene (this will let the getting key cutscene work)
+        if (Global.levelPaused) // TODO: don't just return when in cutscene (this will let the getting key cutscene work)
         {
             return;
         }
@@ -286,49 +313,27 @@ class Player extends VPBSprite
         }
         else
         {
-            // Speed is, by default, 0
-            physics.accelerationX = 0;
-
-            // Input direction is by default, 0
-            var directionInput:Int = 0;
-
-            // If player presses left, move left. If player presses right, move right
-            final duck_on_floor = (ducking && physics.grounded);
-            
-            // Left / Right movement (if not ducking!)
-            if (!duck_on_floor)
+            if (inCutscene) // TODO: Redo this so there's isn't duplicated code
             {
-                if (FlxG.keys.anyPressed([LEFT, A]))
+                var directionInput:Int = 0;
+                final duck_on_floor = (ducking && physics.grounded);
+                
+                if (!duck_on_floor)
                 {
-                    flipX = true; // Flip player
-                    direction = -1; // Set direction
-                    directionInput = -1;
-                }
-                else if (FlxG.keys.anyPressed([RIGHT, D]))
-                {
-                    flipX = false; // Unflip player
-                    direction = 1; // Set direction
-                    directionInput = 1;
-                }
-            }
-
-            if (directionInput != 0)
-            {
-                if (Math.abs(physics.velocityX) < walkStartSpeed)
-                {
-                    physics.velocityX = directionInput * walkStartSpeed;
+                    if (FlxG.keys.anyPressed([LEFT, A]))
+                    {
+                        flipX = true; // Flip player
+                        direction = -1; // Set direction
+                        directionInput = -1;
+                    }
+                    else if (FlxG.keys.anyPressed([RIGHT, D]))
+                    {
+                        flipX = false; // Unflip player
+                        direction = 1; // Set direction
+                        directionInput = 1;
+                    }
                 }
 
-                if (Math.abs(physics.velocityX) < walkSpeed)
-                {
-                    physics.accelerationX = directionInput * walkAcceleration;
-                }
-                else
-                {
-                    physics.accelerationX = directionInput * runAcceleration;
-                }
-
-                // Skidding
                 if (physics.grounded && ((physics.velocityX < 0 && directionInput > 0) || (physics.velocityX > 0 && directionInput < 0)))
                 {
                     if (Math.abs(physics.velocityX) > skidThreshold)
@@ -349,11 +354,85 @@ class Player extends VPBSprite
                         physics.accelerationX = directionInput * walkAcceleration * reverseAccelerationMultiplier;
                     }
                 }
+
+                applyFriction();
             }
             else
             {
-                applyFriction();
+                // Speed is, by default, 0
+                physics.accelerationX = 0;
+
+                // Input direction is by default, 0
+                var directionInput:Int = 0;
+
+                // If player presses left, move left. If player presses right, move right
+                final duck_on_floor = (ducking && physics.grounded);
+                
+                // Left / Right movement (if not ducking!)
+                if (!duck_on_floor)
+                {
+                    if (FlxG.keys.anyPressed([LEFT, A]))
+                    {
+                        flipX = true; // Flip player
+                        direction = -1; // Set direction
+                        directionInput = -1;
+                    }
+                    else if (FlxG.keys.anyPressed([RIGHT, D]))
+                    {
+                        flipX = false; // Unflip player
+                        direction = 1; // Set direction
+                        directionInput = 1;
+                    }
+                }
+
+                if (directionInput != 0)
+                {
+                    if (Math.abs(physics.velocityX) < walkStartSpeed)
+                    {
+                        physics.velocityX = directionInput * walkStartSpeed;
+                    }
+
+                    if (Math.abs(physics.velocityX) < walkSpeed)
+                    {
+                        physics.accelerationX = directionInput * walkAcceleration;
+                    }
+                    else
+                    {
+                        physics.accelerationX = directionInput * runAcceleration;
+                    }
+
+                    // Skidding
+                    if (physics.grounded && ((physics.velocityX < 0 && directionInput > 0) || (physics.velocityX > 0 && directionInput < 0)))
+                    {
+                        if (Math.abs(physics.velocityX) > skidThreshold)
+                        {
+                            physics.accelerationX = directionInput * runAcceleration * skidAccelerationMultiplier;
+
+                            if (skidTimer <= 0)
+                            {
+                                skidTimer = skidTime;
+
+                                FlxG.sound.play("data/sounds/skid.wav");
+
+                                createSkidDust();
+                            }
+                        }
+                        else
+                        {
+                            physics.accelerationX = directionInput * walkAcceleration * reverseAccelerationMultiplier;
+                        }
+                    }
+                }
+                else
+                {
+                    applyFriction();
+                }
             }
+        }
+
+        if (inCutscene)
+        {
+            return;
         }
 
         // Jump buffering and jumping
@@ -362,10 +441,6 @@ class Player extends VPBSprite
             jumpBuffer = jumpBufferTime;
             jumpCutRequested = false;
 
-            // if (!physics.grounded)
-            // {
-            //     rollJumpRequested = true;
-            // }
         }
 
         if (FlxG.keys.anyJustReleased([SPACE]))
@@ -376,7 +451,6 @@ class Player extends VPBSprite
         if (jumpBuffer > 0 && physics.grounded)
         {
             jumpBuffer = 0;
-            // rollJumpRequested = false;
 
             if (backflipping && physics.grounded && ducking && backflipLandingTimer > 0 && backflipTimer > 0 && backflipDirection != 0 && rollJumpRequested)
             {
@@ -560,12 +634,40 @@ class Player extends VPBSprite
 
     public function die()
     {
-        if (Global.coins >= 25)
+        if (dead)
         {
-            Global.removeCoins(25);
+            return;
         }
 
-        FlxG.resetState();
+        if (currentState != SMALL)
+        {
+            final prevBottom = y + height;
+            currentState = SMALL;
+            reloadGraphics();
+            playAnimation(animation.name ?? "dead", true);
+            y = prevBottom - height;
+        }
+
+        angle = 0;
+
+        dead = true;
+        solid = false;
+
+        inCutscene = true;
+
+        physics.velocityX = 0;
+        physics.accelerationX = 0;
+        physics.velocityY = deadJump;
+
+        FlxG.sound.play("data/sounds/kill.wav");
+
+        FlxG.camera.fade(FlxColor.BLACK, restartTime, false);
+
+        new FlxTimer().start(restartTime, function(_)
+        {
+            Global.restart = true;
+            FlxG.resetState();
+        });
     }
 
     public function takeDamage()
@@ -589,15 +691,15 @@ class Player extends VPBSprite
             {
                 canTakeDamage = true;
             }, 1);
-
-            FlxG.sound.play("data/sounds/hurt.wav");
             
             if (currentState == FIRE)
             {
+                FlxG.sound.play("data/sounds/hurt.wav");
                 bigTux();
             }
             else if (currentState == BIG)
             {
+                FlxG.sound.play("data/sounds/hurt.wav");
                 smallTux();
             }
             else if (currentState == SMALL)
@@ -607,6 +709,7 @@ class Player extends VPBSprite
         }
     }
 
+    // Public because scripting
     public function smallTux()
     {
         if (currentState != SMALL)
@@ -619,6 +722,7 @@ class Player extends VPBSprite
         }
     }
 
+    // Public because scripting
     public function bigTux()
     {
         if (currentState == SMALL)
@@ -637,6 +741,7 @@ class Player extends VPBSprite
         }
     }
 
+    // Public because scripting
     public function fireTux()
     {
         if (currentState != SMALL)
@@ -657,7 +762,7 @@ class Player extends VPBSprite
         Global.PS.maximumBullets += 1;
     }
 
-    public function reloadGraphics()
+    function reloadGraphics()
     {
         animation.reset();
         hitboxes.clear();
@@ -665,18 +770,19 @@ class Player extends VPBSprite
         switch(currentState)
         {
             case SMALL:
-                loadGraphic("data/images/creatures/tux/small_tux.png", true, 49, 48);
-                loadAnimations("data/characters/smalltux.json");
+                loadGraphic("data/images/creatures/tux/small_tux.png", true, 57, 48);
+                loadAnimations("data/animjsons/smalltux.json");
             case BIG:
                 loadGraphic("data/images/creatures/tux/big_tux.png", true, 64, 80);
-                loadAnimations("data/characters/bigtux.json");
+                loadAnimations("data/animjsons/bigtux.json");
             case FIRE:
                 loadGraphic("data/images/creatures/tux/fire_tux.png", true, 64, 80);
-                loadAnimations("data/characters/bigtux.json");
+                loadAnimations("data/animjsons/bigtux.json");
         }
     }
 
-    function setDucking(value:Bool):Bool
+    // Public because scripting
+    public function setDucking(value:Bool):Bool
     {
         if (Global.levelPaused)
         {
@@ -721,8 +827,8 @@ class Player extends VPBSprite
         return true;
     }
 
-    // Unfinished?
-    function doBackflip()
+    // Public because scripting
+    public function doBackflip()
     {
         if (Global.levelPaused)
         {
@@ -878,13 +984,7 @@ class Player extends VPBSprite
 
     public function holdEnemy(badguy:Badguy)
     {
-        if (Global.levelPaused)
-        {
-            return;
-        }
-
-        // If there's already a held enemy, return
-        if (heldBadguy != null)
+        if (Global.levelPaused || heldBadguy != null || badguy == null)
         {
             return;
         }
@@ -913,5 +1013,56 @@ class Player extends VPBSprite
         // Throw enemy
         heldBadguy.enemyThrow();
         heldBadguy = null;
+    }
+
+    // Scripting Functions below
+
+    public function walk(speed:Float)
+    {
+        velocity.x = speed;
+    }
+
+    public function jump(height:Float)
+    {
+        velocity.y = -height;
+    }
+
+    public function hurt(kill:Bool = false)
+    {
+        if (kill)
+        {
+            die();
+            return;
+        }
+
+        takeDamage();
+    }
+
+    public function doCheer()
+    {
+        if (currentState != SMALL)
+        {
+            doBackflip();
+        }
+        else
+        {
+            jump(maxJumpHeight);
+        }
+    }
+
+    public function setVisible(visible:Bool)
+    {
+        this.visible = visible;
+    }
+
+    public function setActivated(activate:Bool)
+    {
+        inCutscene = activate;
+    }
+    
+    public function setDirection(right:Bool)
+    {
+        direction = right ? 1 : -1;
+        flipX = right ? false : true;
     }
 }
