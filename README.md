@@ -11,7 +11,7 @@ This is not an official SuperTux Team project.
 - [x] Go back to old versions of SuperTux to start again
 - [ ] Entire engine remake using HaxeFlixel (Makes everything easier) 
 - [ ] Mod support (Polymod)
-- [ ] Replacement of Squirrel support with `hscript`
+- [x] Replacement of Squirrel support with `hscript`
 - [x] Tiled support (for levels)
 - [ ] Removal of unnecessary tilesets
 - [ ] Redesigning of low quality tilesets (Removal if necessary)
