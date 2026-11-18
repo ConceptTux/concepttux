@@ -28,6 +28,7 @@ You need Haxe 4.3.7 with these libraries (Use `haxelib install (library)` for ea
 - `lime` (HaxeFlixel dependency, automatically installed with installing `flixel`)
 - `openfl` (HaxeFlixel dependency, automatically installed with installing `flixel`)
 - `hxcpp` (HaxeFlixel dependency)
+- `hscript` (For scripting)
 
 You also need Git.
 
